@@ -1,12 +1,14 @@
-var http = require('http');
-var config = require('./config.js');
+const http = require('http');
+const config = require('./config.js');
+const app = require('./app');
 
-var server = http.createServer(function (req, res) {
-  res.writeHead(200, { 'Content-Type': 'text/plain' });
-  res.end('Hello World\n');
-});
+app.set('port', config.get('port'));
+app.set('env', config.get('env'));
+app.set('x-powered-by', false);
 
-server.listen(config.get('port'), config.get('ip'), function (x) {
-  var addy = server.address();
-  console.log('running on http://' + addy.address + ':' + addy.port);
+const server = http.createServer(app);
+
+server.listen(config.get('port'), config.get('ip'), () => {
+  const addrInfo = server.address();
+  console.log(`Server running on http://${addrInfo.address}:${addrInfo.port}`);
 });
