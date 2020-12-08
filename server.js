@@ -1,5 +1,5 @@
 var http = require('http');
-var config = require('./config/');
+var config = require('./config.js');
 
 var server = http.createServer(function (req, res) {
   res.writeHead(200, { 'Content-Type': 'text/plain' });
