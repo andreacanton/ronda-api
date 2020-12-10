@@ -6,5 +6,6 @@
   },
   "env": {
     "jest": true
-  }
+  },
+  "ignorePatterns": "node_modules|.vscode"
 }
