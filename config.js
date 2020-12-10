@@ -1,4 +1,5 @@
 const convict = require('convict');
+const fs = require('fs');
 
 convict.addFormat(require('convict-format-with-validator').ipaddress);
 
@@ -18,7 +19,7 @@ const config = convict({
   port: {
     doc: 'The port to bind.',
     format: 'port',
-    default: 3000,
+    default: 3001,
     env: 'PORT',
     arg: 'port',
   },
@@ -29,11 +30,11 @@ const config = convict({
       default: 'localhost',
       env: 'DATABASE_HOST',
     },
-    dialect: {
-      doc: 'Database dialect',
+    driver: {
+      doc: 'Database driver',
       format: '*',
       default: 'sqlite',
-      env: 'DATABASE_DIALECT',
+      env: 'DATABASE_DRIVER',
     },
     port: {
       doc: 'The port the db server',
@@ -62,8 +63,10 @@ const config = convict({
   },
 });
 
-const env = config.get('env');
-config.loadFile(`./config/${env}.json`); // TODO: Check if file exists
+const configFilePath = `./config/${config.get('env')}.json`;
+if (fs.statSync(configFilePath).isFile) {
+  config.loadFile(configFilePath);
+}
 
 config.validate({ allowed: 'strict' });
 
