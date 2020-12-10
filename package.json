@@ -4,8 +4,19 @@
   "description": "API for a Charity",
   "main": "server.js",
   "scripts": {
-    "dev": "nodemon server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "prestart": "npm run drop-sqlite-db || true",
+    "start": "npm run nodemon",
+    "poststart": "npm run create-sqlite-db",
+    "dev": "cross-env NODE_ENV=development node server.js",
+    "nodemon": "nodemon --exec npm run dev",
+    "debug": "npm run start",
+    "lint": "eslint .",
+    "prepush": "npm test",
+    "pretest": "npm run lint",
+    "create-sqlite-db": "shx touch ./db/database.sqlite",
+    "drop-sqlite-db": "shx rm ./db/database.sqlite",
+    "test": "npm run create-sqlite-db; cross-env NODE_ENV=testing jest --coverage; npm run drop-sqlite-db",
+    "test-ci": "jest --coverage --forceExit"
   },
   "keywords": [
     "API",
