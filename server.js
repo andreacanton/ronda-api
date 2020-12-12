@@ -1,5 +1,6 @@
 const http = require('http');
 const config = require('./config.js');
+const logger = require('./logger');
 const app = require('./app');
 
 app.set('port', config.get('port'));
@@ -10,5 +11,5 @@ const server = http.createServer(app);
 
 server.listen(config.get('port'), config.get('ip'), () => {
   const addrInfo = server.address();
-  console.log(`Server running on http://${addrInfo.address}:${addrInfo.port}`);
+  logger.info(`Server running on http://${addrInfo.address}:${addrInfo.port}`);
 });
