@@ -13,8 +13,8 @@
     "lint": "eslint .",
     "prepush": "npm test",
     "pretest": "npm run lint",
-    "create-sqlite-db": "shx touch ./db/database.sqlite",
-    "drop-sqlite-db": "shx rm ./db/database.sqlite",
+    "create-sqlite-db": "shx touch ./database/database.sqlite",
+    "drop-sqlite-db": "shx rm ./database/database.sqlite",
     "test": "npm run create-sqlite-db; cross-env NODE_ENV=testing jest --coverage; npm run drop-sqlite-db",
     "test-ci": "jest --coverage --forceExit"
   },
