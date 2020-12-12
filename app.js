@@ -19,5 +19,10 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 // TODO: Routes
+app.get('/', (req, res) => {
+  res.json({
+    message: 'Welcome to Ronda API',
+  });
+});
 
 module.exports = app;
