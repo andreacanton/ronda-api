@@ -23,18 +23,18 @@ const config = convict({
     env: 'PORT',
     arg: 'port',
   },
-  db: {
+  database: {
     host: {
       doc: 'Database host name/IP',
       format: '*',
       default: 'localhost',
       env: 'DATABASE_HOST',
     },
-    driver: {
-      doc: 'Database driver',
+    dialect: {
+      doc: 'Database dialect',
       format: '*',
       default: 'sqlite',
-      env: 'DATABASE_DRIVER',
+      env: 'DATABASE_DIALECT',
     },
     port: {
       doc: 'The port the db server',
@@ -42,13 +42,13 @@ const config = convict({
       default: 3306,
       env: 'DATABASE_PORT',
     },
-    name: {
+    database: {
       doc: 'Database name',
       format: String,
       default: 'ronda',
       env: 'DATABASE_NAME',
     },
-    user: {
+    username: {
       doc: 'Database user',
       format: String,
       default: 'ronda',
