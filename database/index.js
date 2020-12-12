@@ -24,17 +24,4 @@ function initDatabase() {
   });
 }
 
-const database = initDatabase();
-
-try {
-  database.authenticate();
-  logger.info('Database connection established');
-  if (isDevelopment) {
-    database.sync();
-    logger.info('sqlite db synced');
-  }
-} catch (e) {
-  logger.error('Database connection error!');
-}
-
-module.exports = database;
+module.exports = initDatabase();
