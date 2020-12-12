@@ -64,7 +64,7 @@ const config = convict({
 });
 
 const configFilePath = `./config/${config.get('env')}.json`;
-if (fs.statSync(configFilePath).isFile) {
+if (fs.existsSync(configFilePath)) {
   config.loadFile(configFilePath);
 }
 
