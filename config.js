@@ -6,7 +6,7 @@ convict.addFormat(require('convict-format-with-validator').ipaddress);
 const config = convict({
   env: {
     doc: 'The application environment.',
-    format: ['production', 'development', 'testing'],
+    format: ['production', 'development', 'test'],
     default: 'development',
     env: 'NODE_ENV',
   },

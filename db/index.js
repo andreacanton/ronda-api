@@ -4,7 +4,7 @@ const config = require('../config');
 
 function initDatabase() {
   const dbConfig = config.get('database');
-  if (['development', 'testing'].includes(config.get('env'))) {
+  if (['development', 'test'].includes(config.get('env'))) {
     return new Sequelize({
       dialect: 'sqlite',
       storage: './database.sqlite',
