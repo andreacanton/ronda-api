@@ -2,11 +2,9 @@ const { Sequelize } = require('sequelize');
 const logger = require('../logger');
 const config = require('../config');
 
-const isDevelopment = ['development', 'testing'].include(config.get('env'));
-
 function initDatabase() {
   const dbConfig = config.get('database');
-  if (isDevelopment) {
+  if (['development', 'testing'].includes(config.get('env'))) {
     return new Sequelize({
       dialect: 'sqlite',
       storage: './database.sqlite',
