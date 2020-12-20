@@ -3,9 +3,10 @@ exports.up = (knex) =>
     t.increments('userId').primary();
     t.integer('memberNumber').unsigned().unique().notNullable();
     t.string('email').unique().notNullable();
-    t.string('password').notNullable();
+    t.string('password_digest').notNullable();
     t.string('name');
     t.string('surname');
+    t.string('role');
     t.timestamps();
   });
 

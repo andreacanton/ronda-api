@@ -1,35 +1,58 @@
 const express = require('express');
 
-const users = express.Router();
+const User = require('./user.model').default;
 
-users.get('/', (req, res) => {
-  res.json({
-    message: 'All the users!',
+const routes = express.Router();
+
+const errorHandler = (error, res) => {
+  if (error instanceof User.NotFoundError) {
+    return res.status(404);
+  }
+  return res.status(500).body(error);
+};
+
+routes.get('/', (req, res) => {
+  User.fetchAll().then((users) => {
+    res.json(users);
   });
 });
 
-users.post('/', (req, res) => {
-  res.json({
-    message: 'add a users!',
-  });
+routes.post('/', (req, res) => {
+  User.forge(req.body)
+    .save()
+    .then((user) => res.json(user))
+    .catch((error) => errorHandler(error, res));
 });
 
-users.get('/:userId', (req, res) => {
-  res.json({
-    message: `show the users with id ${req.params.userId}!`,
-  });
+routes.get('/:userId', (req, res) => {
+  User({ userId: req.params.userId })
+    .fetch()
+    .then((user) => res.json(user))
+    .catch((error) => res.status(400).body(error));
 });
 
-users.patch('/:userId', (req, res) => {
-  res.json({
-    message: `edit the users with id ${req.params.userId}!`,
-  });
+routes.patch('/:userId', (req, res) => {
+  User({ userId: req.params.userId })
+    .fetch()
+    .then(async (user) => {
+      const fields = req.body;
+      user.set('name', fields.name);
+      user.set('surname', fields.surname);
+      user.set('role', fields.role);
+      user.set('email', fields.email);
+      user
+        .save()
+        .then((savedUser) => res.body(savedUser))
+        .catch((error) => errorHandler(error, res));
+    })
+    .catch((error) => errorHandler(error, res));
 });
 
-users.delete('/:userId', (req, res) => {
-  res.json({
-    message: `delete the users with id ${req.params.userId}!`,
-  });
+routes.delete('/:userId', (req, res) => {
+  User({ userId: req.params.userId })
+    .destroy()
+    .then(() => res.json(`User ${req.params.userId} destroyed`))
+    .catch((error) => res.status(400).body(error));
 });
 
-module.exports = users;
+module.exports = routes;

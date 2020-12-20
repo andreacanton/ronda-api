@@ -3,7 +3,8 @@
   "plugins": ["import"],
   "rules": {
     "arrow-parens": ["error", "always"],
-    "implicit-arrow-linebreak": "off"
+    "implicit-arrow-linebreak": "off",
+    "curly": "off"
   },
   "env": {
     "jest": true

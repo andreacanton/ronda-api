@@ -6,17 +6,18 @@
   "scripts": {
     "prestart": "npm run drop-sqlite-db || true",
     "start": "npm run nodemon",
-    "poststart": "npm run create-sqlite-db",
     "dev": "cross-env NODE_ENV=development node server.js",
     "nodemon": "nodemon --exec npm run dev",
     "debug": "npm run start",
     "lint": "eslint .",
     "prepush": "npm test",
     "pretest": "npm run lint",
-    "create-sqlite-db": "shx touch ./db/database.sqlite",
-    "drop-sqlite-db": "shx rm ./db/database.sqlite",
+    "create-test-db": "shx touch ./db/test.sqlite3",
+    "drop-test-db": "shx rm ./db/test.sqlite3",
     "test": "npm run create-sqlite-db; cross-env NODE_ENV=test jest --coverage; npm run drop-sqlite-db",
-    "test-ci": "jest --coverage --forceExit"
+    "test-ci": "jest --coverage --forceExit",
+    "migrate": "knex --cwd ./db migrate:latest",
+    "rollback": "knex --cwd ./db migrate:rollback"
   },
   "keywords": [
     "API",
@@ -27,6 +28,9 @@
   "dependencies": {
     "bcrypt-nodejs": "^0.0.3",
     "body-parser": "^1.19.0",
+    "bookshelf": "^1.2.0",
+    "bookshelf-secure-password": "^5.0.0",
+    "checkit": "^0.7.0",
     "convict": "^6.0.0",
     "convict-format-with-validator": "^6.0.0",
     "core-js": "^3.8.1",

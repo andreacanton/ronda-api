@@ -1,4 +1,6 @@
-trailingComma: "all"
-tabWith: 2
-semi: true
-singleQuote: true
+{
+  "trailingComma": "all",
+  "tabWith": 2,
+  "semi": true,
+  "singleQuote": true
+}
