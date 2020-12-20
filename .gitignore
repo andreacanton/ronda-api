@@ -1,5 +1,5 @@
 node_modules/
 .vscode/settings.json
 logs/
-*.sqlite
+*.sqlite3
 coverage/

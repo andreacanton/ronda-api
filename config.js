@@ -30,11 +30,11 @@ const config = convict({
       default: 'localhost',
       env: 'DATABASE_HOST',
     },
-    dialect: {
-      doc: 'Database dialect',
+    client: {
+      doc: 'Database client',
       format: '*',
-      default: 'sqlite',
-      env: 'DATABASE_DIALECT',
+      default: 'mysql2',
+      env: 'DATABASE_CLIENT',
     },
     port: {
       doc: 'The port the db server',
@@ -42,7 +42,7 @@ const config = convict({
       default: 3306,
       env: 'DATABASE_PORT',
     },
-    database: {
+    name: {
       doc: 'Database name',
       format: String,
       default: 'ronda',
@@ -51,13 +51,13 @@ const config = convict({
     username: {
       doc: 'Database user',
       format: String,
-      default: 'ronda',
+      default: 'dev',
       env: 'DATABASE_USER',
     },
     password: {
       doc: 'Database password',
       format: String,
-      default: 'ronda',
+      default: 'dev',
       env: 'DATABASE_PASSWORD',
     },
   },
