@@ -12,12 +12,11 @@
     "lint": "eslint .",
     "prepush": "npm test",
     "pretest": "npm run lint",
-    "create-test-db": "shx touch ./db/test.sqlite3",
-    "drop-test-db": "shx rm ./db/test.sqlite3",
-    "test": "npm run create-sqlite-db; cross-env NODE_ENV=test jest --coverage; npm run drop-sqlite-db",
-    "test-ci": "jest --coverage --forceExit",
+    "test": "cross-env NODE_ENV=test  jest --coverage",
+    "test-ci": "cross-env NODE_ENV=test jest --coverage --forceExit",
     "migrate": "knex --cwd ./db migrate:latest",
-    "rollback": "knex --cwd ./db migrate:rollback"
+    "rollback": "knex --cwd ./db migrate:rollback",
+    "seed": "knex --cwd ./db seed:run"
   },
   "keywords": [
     "API",
@@ -30,6 +29,7 @@
     "body-parser": "^1.19.0",
     "bookshelf": "^1.2.0",
     "bookshelf-secure-password": "^5.0.0",
+    "bookshelf-virtuals-plugin": "^1.0.0",
     "checkit": "^0.7.0",
     "convict": "^6.0.0",
     "convict-format-with-validator": "^6.0.0",
@@ -39,6 +39,7 @@
     "helmet": "^4.2.0",
     "jsonwebtoken": "^8.5.1",
     "knex": "^0.21.13",
+    "mock-knex": "^0.4.9",
     "mysql2": "^2.2.5",
     "winston": "^3.3.3"
   },

@@ -1,9 +1,9 @@
-const checkit = require('checkit');
-const bookshelf = require('../db');
+const CheckIt = require('checkit');
+const orm = require('../db');
 
 const AVAILABLE_ROLES = ['member', 'admin'];
 
-const User = bookshelf.model('User', {
+const User = orm.model('User', {
   tableName: 'users',
   hasSecurePassword: true,
   defaults: {
@@ -13,12 +13,13 @@ const User = bookshelf.model('User', {
     this.on('saving', this.validateSave);
   },
   validateSave() {
-    return checkit({
+    return CheckIt({
       memberNumber: [
         'required',
         'integer',
         (value) =>
-          this.knex('users')
+          orm.knex
+            .from('users')
             .where('memberNumber', '=', value)
             .then((resp) => {
               if (resp.length > 0)
@@ -30,7 +31,8 @@ const User = bookshelf.model('User', {
         'required',
         'email',
         (value) =>
-          this.knex('users')
+          orm.knex
+            .from('users')
             .where('email', '=', value)
             .then((resp) => {
               if (resp.length > 0)

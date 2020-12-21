@@ -1,10 +1,12 @@
-// eslint-disable-next-line import/order
-const config = require('./knexfile');
+const knex = require('knex');
+const bookshelf = require('bookshelf');
+const securePassword = require('bookshelf-secure-password'); // TODO: Remove package because have an old bcrypt
+const config = require('../config');
+const knexConfig = require('./knexfile');
 
-const knex = require('knex')(config);
-const bookshelf = require('bookshelf')(knex);
-const securePassword = require('bookshelf-secure-password');
+const connection = knex(knexConfig[config.get('env')]);
+const orm = bookshelf(connection);
 
-bookshelf.plugin(securePassword);
+orm.plugin(securePassword);
 
-module.exports = bookshelf;
+module.exports = orm;
