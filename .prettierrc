@@ -2,5 +2,6 @@
   "trailingComma": "all",
   "tabWith": 2,
   "semi": true,
-  "singleQuote": true
+  "singleQuote": true,
+  "arrowParens": "always"
 }
