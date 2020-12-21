@@ -4,7 +4,6 @@
   "description": "API for a Charity",
   "main": "server.js",
   "scripts": {
-    "prestart": "npm run drop-sqlite-db || true",
     "start": "npm run nodemon",
     "dev": "cross-env NODE_ENV=development node server.js",
     "nodemon": "nodemon --exec npm run dev",
