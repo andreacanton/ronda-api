@@ -1,4 +1,3 @@
-const logger = require('../logger');
 const orm = require('../db/index');
 const User = require('./user.model');
 
@@ -19,9 +18,9 @@ describe('User model', () => {
   });
   test('User fetch by id', async () => {
     const user = await new User({ userId: 2 }).fetch();
-    expect(user.attributes.userId).toEqual(2);
-    expect(user.attributes.name).toBe('B');
-    expect(user.attributes.role).toBe('member');
+    expect(user.get('userId')).toEqual(2);
+    expect(user.get('name')).toBe('B');
+    expect(user.get('role')).toBe('member');
   });
   test('User fetch id 5 should fail', () =>
     expect(new User({ userId: 5 }).fetch()).rejects.toThrow('EmptyResponse'));

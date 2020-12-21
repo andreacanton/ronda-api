@@ -12,7 +12,7 @@ exports.up = (knex) =>
     t.string('name');
     t.string('surname');
     t.string('role');
-    t.timestamps();
+    t.timestamps(false, true);
   });
 
 exports.down = (knex) => knex.schema.dropTableIfExists('users');
