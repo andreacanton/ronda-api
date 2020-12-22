@@ -1,7 +1,8 @@
 const convict = require('convict');
 const fs = require('fs');
+const convictFormatWithValidator = require('convict-format-with-validator');
 
-convict.addFormat(require('convict-format-with-validator').ipaddress);
+convict.addFormats(convictFormatWithValidator);
 
 const config = convict({
   env: {
@@ -59,6 +60,38 @@ const config = convict({
       format: String,
       default: 'dev',
       env: 'DATABASE_PASSWORD',
+    },
+  },
+  email: {
+    defaultFrom: {
+      doc: 'Default Email from address',
+      format: 'email',
+      default: 'hello@andreacanton.dev',
+      env: 'EMAIL_FROM',
+    },
+    host: {
+      doc: 'SMTP host',
+      format: '*',
+      default: 'localhost',
+      env: 'EMAIL_HOST',
+    },
+    port: {
+      doc: 'SMTP port',
+      format: 'port',
+      default: 2525,
+      env: 'EMAIL_PORT',
+    },
+    user: {
+      doc: 'SMTP user',
+      format: String,
+      default: 'root',
+      env: 'EMAIL_USER',
+    },
+    pass: {
+      doc: 'SMTP pass',
+      format: String,
+      default: 'root',
+      env: 'EMAIL_pass',
     },
   },
 });
