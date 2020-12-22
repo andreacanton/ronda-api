@@ -91,7 +91,7 @@ const config = convict({
       doc: 'SMTP pass',
       format: String,
       default: 'root',
-      env: 'EMAIL_pass',
+      env: 'EMAIL_PASS',
     },
   },
 });

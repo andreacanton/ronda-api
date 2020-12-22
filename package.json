@@ -13,9 +13,10 @@
     "pretest": "npm run lint",
     "test": "cross-env NODE_ENV=test  jest --coverage",
     "test-ci": "cross-env NODE_ENV=test jest --coverage --forceExit",
-    "migrate": "knex --cwd ./db migrate:latest",
-    "rollback": "knex --cwd ./db migrate:rollback",
-    "seed": "knex --cwd ./db seed:run"
+    "db:migrate": "knex --cwd ./db migrate:latest",
+    "db:rollback": "knex --cwd ./db migrate:rollback",
+    "db:reset": "knex --cwd ./db migrate:rollback --all && npm run db:migrate",
+    "db:seed": "knex --cwd ./db seed:run"
   },
   "keywords": [
     "API",

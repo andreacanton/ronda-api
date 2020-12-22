@@ -12,7 +12,7 @@ const stringFormat = format.printf(
 );
 
 const logger = createLogger({
-  level: 'info',
+  level: process.env.NODE_ENV !== 'production' ? 'debug' : 'info',
   format: format.combine(format.timestamp(), format.json()),
   transports: [
     new transports.File({ filename: 'logs/error.log', level: 'error' }),

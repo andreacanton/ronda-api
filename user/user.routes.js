@@ -1,5 +1,8 @@
 const express = require('express');
 
+const config = require('../config');
+const mailer = require('../mailer');
+const logger = require('../logger');
 const User = require('./user.model');
 
 const routes = express.Router();
@@ -12,6 +15,25 @@ routes.get('/', async (req, res) => {
 routes.post('/', async (req, res, next) => {
   try {
     const user = await new User(req.body).save();
+
+    // TODO: remove password from email and add link to recover/set password
+    if (user.get('email')) {
+      await mailer.sendMail({
+        from: config.get('email').defaultFrom,
+        to: user.get('email'),
+        subject: 'Registrazione per Ronda della carità di Verona',
+        html: `
+          <h1>Ciao, ${user.get('firstname')}</h1>
+          <p>Il tuo account è stato registrato correttamente, queste sono le tue credenziali:</p>
+          <ul>
+            <li>email: ${user.get('email')}</li>
+            <li>password: ${req.body.password}</li>
+          </ul>
+        `,
+      });
+      logger.debug(`Registration email sent to ${user.email}`);
+    }
+
     res.json(user);
   } catch (e) {
     next(e);

@@ -5,7 +5,7 @@ const log = {
   warn: (msg) => logger.warn(msg),
   error: (msg) => logger.error(msg),
   deprecate: (msg) => logger.notice(msg),
-  debug: (msg) => logger.debug(msg),
+  debug: (msg) => logger.debug(JSON.stringify(msg)),
 };
 
 const dbConfig = config.get('database');

@@ -37,7 +37,7 @@ const User = orm.model('User', {
           orm.knex
             .from('users')
             .where('member_number', '=', value)
-            .where('user_id', '!=', this.attributes.userId || null)
+            .where('user_id', '!=', this.attributes.userId || 0)
             .then((resp) => {
               if (resp.length > 0)
                 // eslint-disable-next-line nonblock-statement-body-position
@@ -50,7 +50,7 @@ const User = orm.model('User', {
           orm.knex
             .from('users')
             .where('email', '=', value)
-            .where('user_id', '!=', this.attributes.userId || null)
+            .where('user_id', '!=', this.attributes.userId || 0)
             .then((resp) => {
               if (resp.length > 0)
                 // eslint-disable-next-line nonblock-statement-body-position
