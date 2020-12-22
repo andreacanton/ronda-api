@@ -2,6 +2,7 @@ const bodyParser = require('body-parser');
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
+const logger = require('./logger');
 const userRoutes = require('./user/user.routes');
 
 const app = express();
@@ -21,11 +22,21 @@ app.use(bodyParser.json());
 
 app.use('/users', userRoutes);
 
-// TODO: Routes
 app.get('/', (req, res) => {
   res.json({
     message: 'Welcome to Ronda API',
   });
+});
+
+app.use((err, req, res, next) => {
+  if (err instanceof Error) {
+    logger.error(err);
+    res.status(500).json({
+      error: err,
+    });
+  } else {
+    next(err);
+  }
 });
 
 module.exports = app;

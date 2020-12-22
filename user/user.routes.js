@@ -10,30 +10,29 @@ routes.get('/', async (req, res) => {
   res.json(users);
 });
 
-routes.post('/', async (req, res) => {
+routes.post('/', async (req, res, next) => {
   try {
     const user = await new User(req.body).save();
     res.json(user);
   } catch (e) {
-    res.status(500).json(e);
+    next(e);
   }
 });
 
-routes.get('/:userId', async (req, res) => {
+routes.get('/:userId', async (req, res, next) => {
   try {
     const user = await new User({ userId: req.params.userId }).fetch();
     res.json(user);
   } catch (e) {
-    logger.error(e);
     if (e.message === 'EmptyResponse') {
       res.status(404).json({ message: 'User not found' });
     } else {
-      res.status(500).json(e);
+      next(e);
     }
   }
 });
 
-routes.patch('/:userId', async (req, res) => {
+routes.patch('/:userId', async (req, res, next) => {
   try {
     const user = await new User({ userId: req.params.userId }).fetch();
     const fields = req.body;
@@ -58,27 +57,25 @@ routes.patch('/:userId', async (req, res) => {
     const saved = await user.save();
     res.json(saved.attributes);
   } catch (e) {
-    logger.error(e);
     if (e.message === 'EmptyResponse') {
       res.status(404).json({ message: 'User not found' });
     } else {
-      res.status(500).json(e);
+      next(e);
     }
   }
 });
 
-routes.delete('/:userId', async (req, res) => {
+routes.delete('/:userId', async (req, res, next) => {
   try {
     await new User({ userId: req.params.userId }).destroy();
     res.json({
       message: `User ${req.params.userId} destroyed`,
     });
   } catch (e) {
-    logger.error(e);
     if (e.message === 'EmptyResponse') {
       res.status(404).json({ message: 'User not found' });
     } else {
-      res.status(500).json(e);
+      next(e);
     }
   }
 });
