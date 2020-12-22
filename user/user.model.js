@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const CheckIt = require('checkit');
 const orm = require('../db');
 
@@ -5,8 +6,8 @@ const AVAILABLE_ROLES = ['member', 'admin'];
 
 const User = orm.model('User', {
   tableName: 'users',
-  idAttribute: 'userId',
-  hasSecurePassword: true,
+  idAttribute: 'user_id',
+  hasSecurePassword: 'passwordDigest',
   defaults: {
     role: 'member',
   },
@@ -18,7 +19,7 @@ const User = orm.model('User', {
           email: ['required'],
           role: ['required'],
           memberNumber: ['required'],
-          password_digest: ['required'],
+          passwordDigest: ['required'],
         }).run(this.attributes),
       // eslint-disable-next-line function-paren-newline
     );
@@ -35,8 +36,8 @@ const User = orm.model('User', {
         (value) =>
           orm.knex
             .from('users')
-            .where('memberNumber', '=', value)
-            .where('userId', '!=', this.attributes.userId)
+            .where('member_number', '=', value)
+            .where('user_id', '!=', this.attributes.userId || null)
             .then((resp) => {
               if (resp.length > 0)
                 // eslint-disable-next-line nonblock-statement-body-position
@@ -49,7 +50,7 @@ const User = orm.model('User', {
           orm.knex
             .from('users')
             .where('email', '=', value)
-            .where('userId', '!=', this.attributes.userId)
+            .where('user_id', '!=', this.attributes.userId || null)
             .then((resp) => {
               if (resp.length > 0)
                 // eslint-disable-next-line nonblock-statement-body-position
@@ -58,6 +59,12 @@ const User = orm.model('User', {
       ],
       role: (value) => AVAILABLE_ROLES.includes(value),
     }).run(this.attributes);
+  },
+  parse(response) {
+    return _.mapKeys(response, (value, key) => _.camelCase(key));
+  },
+  format(attributes) {
+    return _.mapKeys(attributes, (value, key) => _.snakeCase(key));
   },
 });
 

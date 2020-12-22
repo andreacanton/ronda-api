@@ -1,7 +1,7 @@
 exports.up = (knex) =>
   knex.schema.createTable('users', (t) => {
-    t.increments('userId').primary();
-    t.integer('memberNumber')
+    t.increments('user_id').primary();
+    t.integer('member_number')
       .unsigned()
       .unique()
       .notNullable();
@@ -9,8 +9,8 @@ exports.up = (knex) =>
       .unique()
       .notNullable();
     t.string('password_digest').notNullable();
-    t.string('name');
-    t.string('surname');
+    t.string('firstname');
+    t.string('lastname');
     t.string('role');
     t.timestamps(false, true);
   });
