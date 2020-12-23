@@ -12,6 +12,17 @@ routes.get('/', async (req, res) => {
   res.json(users);
 });
 
+routes.get('/is-taken/:fieldName/:fieldValue', async (req, res) => {
+  const isTaken = await User.isFieldTaken(
+    req.params.fieldName,
+    req.params.fieldValue,
+    req.query.userId,
+  );
+  res.json({
+    isTaken,
+  });
+});
+
 routes.post('/', async (req, res, next) => {
   try {
     const user = await new User(req.body).save();
@@ -36,6 +47,7 @@ routes.post('/', async (req, res, next) => {
 
     res.json(user);
   } catch (e) {
+    console.log(e);
     next(e);
   }
 });
