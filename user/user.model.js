@@ -78,6 +78,16 @@ const User = orm.model(
       const resp = await query;
       return resp.length > 0;
     },
+    async fetchFromIdentity(identity) {
+      const response = await orm.knex
+        .from('users')
+        .where('email', '=', identity)
+        .orWhere('member_number', '=', identity);
+      if (response.length === 0) {
+        throw Error('No user found');
+      }
+      return response[0];
+    },
   },
 );
 

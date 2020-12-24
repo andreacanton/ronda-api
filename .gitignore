@@ -4,3 +4,4 @@ logs/
 *.sqlite
 coverage/
 .env
+*.pem

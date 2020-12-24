@@ -17,6 +17,18 @@ const config = convict({
     default: '127.0.0.1',
     env: 'IP_ADDRESS',
   },
+  frontendUrl: {
+    doc: 'The url of frontend',
+    format: 'url',
+    default: 'http://localhost:4200/',
+    env: 'FRONTEND_URL',
+  },
+  tokenExpiration: {
+    doc: 'The token default expiration time',
+    format: String,
+    default: '1h',
+    env: 'TOKEN_EXPIRATION',
+  },
   port: {
     doc: 'The port to bind.',
     format: 'port',
