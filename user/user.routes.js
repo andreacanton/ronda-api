@@ -1,4 +1,5 @@
 const express = require('express');
+const { authorize } = require('../authorization/auth.middleware');
 const { createToken } = require('../authorization/token');
 const config = require('../config');
 const mailer = require('../mailer');
@@ -7,7 +8,7 @@ const User = require('./user.model');
 
 const routes = express.Router();
 
-routes.get('/', async (req, res) => {
+routes.get('/', authorize('admin'), async (req, res) => {
   const users = await User.fetchAll();
   res.json(users);
 });
@@ -23,7 +24,7 @@ routes.get('/is-taken/:fieldName/:fieldValue', async (req, res) => {
   });
 });
 
-routes.post('/', async (req, res, next) => {
+routes.post('/', authorize('admin'), async (req, res, next) => {
   try {
     const user = await new User(req.body).save();
 
@@ -51,7 +52,7 @@ routes.post('/', async (req, res, next) => {
   }
 });
 
-routes.get('/:userId', async (req, res, next) => {
+routes.get('/:userId', authorize('admin'), async (req, res, next) => {
   try {
     const user = await new User({ userId: req.params.userId }).fetch();
     res.json(user);
@@ -64,7 +65,7 @@ routes.get('/:userId', async (req, res, next) => {
   }
 });
 
-routes.patch('/:userId', async (req, res, next) => {
+routes.patch('/:userId', authorize('admin'), async (req, res, next) => {
   try {
     const user = await new User({ userId: req.params.userId }).fetch();
     const fields = req.body;
@@ -97,7 +98,7 @@ routes.patch('/:userId', async (req, res, next) => {
   }
 });
 
-routes.delete('/:userId', async (req, res, next) => {
+routes.delete('/:userId', authorize('admin'), async (req, res, next) => {
   try {
     await new User({ userId: req.params.userId }).destroy();
     res.json({
