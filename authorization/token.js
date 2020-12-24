@@ -2,8 +2,8 @@ const jwt = require('jsonwebtoken');
 const fs = require('fs');
 const config = require('../config');
 
-const PRIVATE_KEY = fs.readFileSync('../private_key.pem');
-const PUBLIC_KEY = fs.readFileSync('../public_key.pem');
+const PRIVATE_KEY = fs.readFileSync(`${__dirname}/private_key.pem`);
+const PUBLIC_KEY = fs.readFileSync(`${__dirname}/public_key.pem`);
 
 function signToken(subject, payload) {
   const token = jwt.sign(payload, PRIVATE_KEY, {
