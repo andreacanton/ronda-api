@@ -22,4 +22,4 @@ Per la chiave pubblica:
 openssl rsa -in private_key.pem -outform PEM -pubout -out public.pem
 ```
 
-metterle nella cartella di root e leggibili solo localmente.
+metterle nella cartella `authorization` e leggibili solo localmente.
