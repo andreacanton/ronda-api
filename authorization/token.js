@@ -22,7 +22,9 @@ module.exports.createToken = signToken;
 
 // eslint-disable-next-line func-names
 module.exports.verifyToken = function (token) {
-  return jwt.verify(token, PUBLIC_KEY);
+  return jwt.verify(token, PUBLIC_KEY, {
+    algorithm: 'RS256',
+  });
 };
 
 // eslint-disable-next-line func-names

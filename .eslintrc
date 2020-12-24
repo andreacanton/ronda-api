@@ -4,7 +4,8 @@
   "rules": {
     "arrow-parens": ["error", "always"],
     "implicit-arrow-linebreak": "off",
-    "curly": "off"
+    "curly": "off",
+    "operator-linebreak": "off"
   },
   "env": {
     "jest": true
