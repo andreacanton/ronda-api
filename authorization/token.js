@@ -36,5 +36,9 @@ module.exports.refreshToken = function (token) {
   delete payload.exp;
   delete payload.nbf;
   delete payload.jti;
-  return signToken(payload, subject);
+  return signToken(subject, payload);
+};
+
+module.exports.getPublicKey = function () {
+  return PUBLIC_KEY.toString();
 };

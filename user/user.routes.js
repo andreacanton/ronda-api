@@ -1,6 +1,5 @@
 const express = require('express');
 const { authorize } = require('../authorization/auth.middleware');
-const { createToken } = require('../authorization/token');
 const config = require('../config');
 const mailer = require('../mailer');
 const logger = require('../logger');
@@ -110,33 +109,6 @@ routes.delete('/:userId', authorize('admin'), async (req, res, next) => {
     } else {
       next(e);
     }
-  }
-});
-
-routes.post('/login', async (req, res) => {
-  try {
-    let user = await new User({ email: req.body.identity }).fetch({
-      require: false,
-    });
-    if (!user) {
-      user = await new User({
-        memberNumber: req.body.identity,
-      }).fetch({ require: false });
-    }
-    if (!user) {
-      throw Error(`User not found for identity ${req.body.identity}`);
-    }
-    await user.authenticate(req.body.password);
-    const tokenResponse = createToken(user.get('userId'), {
-      role: user.get('role'),
-      email: user.get('email'),
-      firstname: user.get('firstname'),
-      lastname: user.get('lastname'),
-    });
-    res.json(tokenResponse);
-  } catch (e) {
-    logger.warn('Login authentication failed', e);
-    res.status(401).json({ message: 'Authentication failed' });
   }
 });
 

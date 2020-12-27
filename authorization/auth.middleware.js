@@ -1,5 +1,6 @@
 const logger = require('../logger');
 const { verifyToken } = require('./token');
+const { getAuthFromHeaders } = require('./auth.helper');
 
 module.exports.authorize = function (role = null) {
   return (req, res, next) => {
@@ -12,15 +13,7 @@ module.exports.authorize = function (role = null) {
     }
 
     try {
-      let token;
-      const parts = req.headers.authorization.split(' ');
-      if (parts.length === 2) {
-        const scheme = parts[0];
-        const credentials = parts[1];
-        if (/^Bearer$/i.test(scheme)) {
-          token = credentials;
-        }
-      }
+      const token = getAuthFromHeaders(req.headers);
       if (!token) {
         throw Error('Token not present in header');
       }
