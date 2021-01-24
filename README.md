@@ -2,6 +2,20 @@
 
 Per far partire l'ambiente di sviluppo
 
+far partire il server database (es. con Bower su mac)
+
+```shell
+bower services start mysql
+```
+
+far fare eventuali migrazioni
+
+```
+npm run db:migrate
+```
+
+Infine far partire il server node
+
 ```shell
 npm start
 ```
