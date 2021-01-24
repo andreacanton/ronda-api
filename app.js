@@ -3,8 +3,9 @@ const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const logger = require('./logger');
-const userRoutes = require('./user/user.routes');
 const authRoutes = require('./authorization/auth.routes');
+const userRoutes = require('./user/user.routes');
+const recipientRoutes = require('./recipient/recipient.routes');
 
 const app = express();
 
@@ -24,6 +25,8 @@ app.use(bodyParser.json());
 app.use('/auth', authRoutes);
 
 app.use('/users', userRoutes);
+
+app.use('/recipients', recipientRoutes);
 
 app.get('/', (req, res) => {
   res.json({

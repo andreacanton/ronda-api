@@ -69,10 +69,10 @@ routes.patch('/:userId', authorize('admin'), async (req, res, next) => {
     const user = await new User({ userId: req.params.userId }).fetch();
     const fields = req.body;
     if (fields.name) {
-      user.set('name', fields.name);
+      user.set('firstname', fields.firstname);
     }
     if (fields.surname) {
-      user.set('surname', fields.surname);
+      user.set('lastname', fields.lastname);
     }
     if (fields.role) {
       user.set('role', fields.role);

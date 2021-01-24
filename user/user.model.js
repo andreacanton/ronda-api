@@ -18,7 +18,7 @@ const User = orm.model(
         'creating',
         () =>
           CheckIt({
-            email: ['required'],
+            email: ['required', 'email'],
             role: ['required'],
             memberNumber: ['required'],
             passwordDigest: ['required'],
