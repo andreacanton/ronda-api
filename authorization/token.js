@@ -11,11 +11,7 @@ function signToken(subject, payload) {
     subject: subject.toString(),
     expiresIn: config.get('tokenExpiration'),
   });
-  const decoded = jwt.decode(token);
-  return {
-    access_token: token,
-    expires_at: decoded.exp,
-  };
+  return token;
 }
 
 module.exports.createToken = signToken;

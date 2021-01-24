@@ -25,8 +25,11 @@ routes.post('/login', async (req, res) => {
       email: user.get('email'),
       firstname: user.get('firstname'),
       lastname: user.get('lastname'),
+      memberNumber: user.get('memberNumber'),
     });
-    res.json(tokenResponse);
+    res.json({
+      access_token: tokenResponse,
+    });
   } catch (e) {
     logger.warn('Login authentication failed', e);
     res.status(401).json({ message: 'Authentication failed' });
