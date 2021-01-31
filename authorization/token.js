@@ -5,11 +5,11 @@ const config = require('../config');
 const PRIVATE_KEY = fs.readFileSync(`${__dirname}/private_key.pem`);
 const PUBLIC_KEY = fs.readFileSync(`${__dirname}/public_key.pem`);
 
-function signToken(subject, payload) {
+function signToken(subject, payload, expiration = null) {
   const token = jwt.sign(payload, PRIVATE_KEY, {
     algorithm: 'RS256',
     subject: subject.toString(),
-    expiresIn: config.get('tokenExpiration'),
+    expiresIn: expiration || config.get('tokenExpiration'),
   });
   return token;
 }

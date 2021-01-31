@@ -1,6 +1,7 @@
 const logger = require('../logger');
 const { verifyToken } = require('./token');
 const { getAuthFromHeaders } = require('./auth.helper');
+const User = require('../user/user.model');
 
 module.exports.authorize = function (role = null) {
   return (req, res, next) => {
@@ -17,7 +18,13 @@ module.exports.authorize = function (role = null) {
       if (!token) {
         throw Error('Token not present in header');
       }
-      req.auth = verifyToken(token);
+      req.auth = {};
+      req.auth.payload = verifyToken(token);
+
+      if (req.auth.payload.sub) {
+        req.auth.user = new User({ userId: req.auth.payload.sub }).fetch();
+      }
+
       if (role && req.auth.role !== role) {
         throw Error(
           `Unauthorized access for token ${token} requested role ${role}`,

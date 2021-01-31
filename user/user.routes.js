@@ -1,5 +1,6 @@
 const express = require('express');
 const { authorize } = require('../authorization/auth.middleware');
+const { createToken } = require('../authorization/token');
 const config = require('../config');
 const mailer = require('../mailer');
 const logger = require('../logger');
@@ -25,21 +26,43 @@ routes.get('/is-taken/:fieldName/:fieldValue', async (req, res) => {
 
 routes.post('/', authorize('admin'), async (req, res, next) => {
   try {
-    const user = await new User(req.body).save();
+    const params = req.body;
+    const user = await new User({
+      firstname: params.firstname,
+      lastname: params.lastname,
+      password: params.password,
+      email: params.email,
+      memberNumber: params.memberNumber,
+      role: params.role,
+    }).save();
 
-    // TODO: remove password from email and add link to recover/set password
-    if (user.get('email')) {
+    if (user.get('email') && req.query.resetUrl) {
+      const resetToken = createToken(
+        user.get('userId'),
+        { resetPassword: true },
+        '1h',
+      );
+
+      const resetPasswordUrl = `${req.query.resetUrl}?token=${resetToken}`;
+
       await mailer.sendMail({
         from: config.get('email').defaultFrom,
         to: user.get('email'),
         subject: 'Registrazione per Ronda della carità di Verona',
         html: `
-          <h1>Ciao, ${user.get('firstname')}</h1>
-          <p>Il tuo account è stato registrato correttamente, queste sono le tue credenziali:</p>
+          <h1>Ciao ${user.get('firstname')},</h1>
+          <p>Il tuo account per la Ronda della carità è stato registrato correttamente.</p>
+          <p>Potrai accedere utilizzando come identificativo d'accesso sia la tua email che il tuo numero socio presente sulla tua tessera associativa:</p>
           <ul>
             <li>email: ${user.get('email')}</li>
-            <li>password: ${req.body.password}</li>
+            <li>numero socio: ${user.get('memberNumber')}</li>
           </ul>
+          <p>Per poter accedere dovrai prima <a href="${resetPasswordUrl}">impostare la password</a>.</p>
+
+          <p>Reimposta password: <a href="${resetPasswordUrl}">${resetPasswordUrl}</a></p>
+
+          <p>Grazie ancora per il tuo impegno</p>
+          <p>La direzione</p>
         `,
       });
       logger.debug(`Registration email sent to ${user.email}`);
