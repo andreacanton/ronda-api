@@ -109,7 +109,7 @@ routes.get('/reset-password', async (req, res) => {
     const payload = verifyToken(token);
     const user = await new User({ userId: payload.sub }).fetch();
 
-    user.set('password', req.password);
+    user.set('password', req.body.password);
 
     await user.save();
     res.json({
