@@ -2,10 +2,10 @@
 
 Per far partire l'ambiente di sviluppo
 
-far partire il server database (es. con Bower su mac)
+far partire il server database (es. con Homebrew su mac)
 
 ```shell
-bower services start mysql
+brew services start mysql
 ```
 
 far fare eventuali migrazioni
