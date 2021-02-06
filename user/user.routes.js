@@ -24,6 +24,10 @@ routes.get('/is-taken/:fieldName/:fieldValue', async (req, res) => {
   });
 });
 
+routes.get('/profile', authorize(), async (req, res) => {
+  res.json(req.auth.user);
+});
+
 routes.post('/', authorize('admin'), async (req, res, next) => {
   try {
     const params = req.body;

@@ -4,7 +4,7 @@ const { getAuthFromHeaders } = require('./auth.helper');
 const User = require('../user/user.model');
 
 module.exports.authorize = function (role = null) {
-  return (req, res, next) => {
+  return async (req, res, next) => {
     if (
       req.method === 'OPTIONS' &&
       // eslint-disable-next-line no-prototype-builtins
@@ -22,7 +22,9 @@ module.exports.authorize = function (role = null) {
       req.auth.payload = verifyToken(token);
 
       if (req.auth.payload.sub) {
-        req.auth.user = new User({ userId: req.auth.payload.sub }).fetch();
+        req.auth.user = await new User({
+          userId: req.auth.payload.sub,
+        }).fetch();
       }
 
       if (req.auth.payload.type !== 'access-token') {
