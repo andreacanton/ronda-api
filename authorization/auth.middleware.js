@@ -13,8 +13,8 @@ module.exports.authorize = function (role = null) {
       return next();
     }
 
+    const token = getAuthFromHeaders(req.headers);
     try {
-      const token = getAuthFromHeaders(req.headers);
       if (!token) {
         throw Error('Token not present in header');
       }
@@ -28,17 +28,15 @@ module.exports.authorize = function (role = null) {
       }
 
       if (req.auth.payload.type !== 'access-token') {
-        throw Error(
-          "Unauthorized access for token requested type 'access-token'",
-        );
+        throw Error("Required type 'access-token'");
       }
 
       if (role && req.auth.payload.role !== role) {
-        throw Error(`Unauthorized access for token requested role ${role}`);
+        throw Error(`Required role ${role}`);
       }
       return next();
     } catch (error) {
-      logger.warn('Unauthorized access', error);
+      logger.warn('Unauthorized access', { error, token });
       res.status(401).json({
         message: `Unauthorized access. ${error}`,
       });
