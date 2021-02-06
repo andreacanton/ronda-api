@@ -8,10 +8,9 @@ const Recipient = require('./recipient.model');
 const fetchRecipient = function () {
   return async (req, res, next) => {
     try {
-      const recipient = await new Recipient({
+      req.recipient = await new Recipient({
         recipientId: req.params.recipientId,
       }).fetch();
-      res.json(recipient);
       next();
     } catch (e) {
       if (e.message === 'EmptyResponse') {
@@ -30,16 +29,20 @@ routes.get('/', authorize(), async (req, res) => {
   res.json(recipients);
 });
 
-routes.get('/is-card-number-taken/:fieldValue', async (req, res) => {
-  const isTaken = await Recipient.isFieldTaken(
-    'cardNumber',
-    req.params.fieldValue,
-    req.query.userId,
-  );
-  res.json({
-    isTaken,
-  });
-});
+routes.get(
+  '/is-card-number-taken/:fieldValue',
+  authorize(),
+  async (req, res) => {
+    const isTaken = await Recipient.isFieldTaken(
+      'cardNumber',
+      req.params.fieldValue,
+      req.query.userId,
+    );
+    res.json({
+      isTaken,
+    });
+  },
+);
 
 routes.post('/', authorize(), async (req, res, next) => {
   try {
@@ -57,7 +60,7 @@ routes.get('/:recipientId', authorize(), fetchRecipient(), async (req, res) => {
 
 routes.patch(
   '/:recipientId',
-  authorize('admin'),
+  authorize(),
   fetchRecipient(),
   async (req, res, next) => {
     try {

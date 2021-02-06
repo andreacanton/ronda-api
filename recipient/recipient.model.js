@@ -19,14 +19,13 @@ const Recipient = orm.model(
       );
 
       this.on('updating', () => {
-        this.attributes.updated_at = new Date();
+        this.attributes.updatedAt = new Date();
       });
       this.on('saving', this.validateSave);
     },
     validateSave() {
       return CheckIt({
         cardNumber: [
-          'integer',
           (value) =>
             Recipient.isFieldTaken(
               'cardNumber',
@@ -50,10 +49,10 @@ const Recipient = orm.model(
   {
     async isFieldTaken(fieldName, fieldValue, userId = null) {
       let query = orm.knex
-        .from('recipient')
+        .from('recipients')
         .where(_.snakeCase(fieldName), '=', fieldValue);
       if (userId) {
-        query = query.where('recipient_id', '=', userId);
+        query = query.where('recipient_id', '!=', userId);
       }
       const resp = await query;
       return resp.length > 0;
