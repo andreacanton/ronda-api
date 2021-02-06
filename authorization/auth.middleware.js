@@ -33,7 +33,7 @@ module.exports.authorize = function (role = null) {
         );
       }
 
-      if (role && req.auth.role !== role) {
+      if (role && req.auth.payload.role !== role) {
         throw Error(
           `Unauthorized access for token ${token} requested role ${role}`,
         );
