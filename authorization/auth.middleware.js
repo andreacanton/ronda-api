@@ -42,10 +42,8 @@ module.exports.authorize = function (role = null) {
     } catch (error) {
       logger.warn('Unauthorized access', error);
       res.status(401).json({
-        message:
-          'Unauthorized access. Header format is Authorization: Bearer [token]',
+        message: `Unauthorized access. ${error}`,
       });
-      return next(error);
     }
   };
 };
