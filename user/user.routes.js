@@ -6,6 +6,21 @@ const mailer = require('../mailer');
 const logger = require('../logger');
 const User = require('./user.model');
 
+const fetchUser = function () {
+  return async (req, res, next) => {
+    try {
+      req.user = await new User({ userId: req.params.userId }).fetch();
+      next();
+    } catch (e) {
+      if (e.message === 'EmptyResponse') {
+        res.status(404).json({ message: 'User not found' });
+      } else {
+        next(e);
+      }
+    }
+  };
+};
+
 const routes = express.Router();
 
 routes.get('/', authorize('admin'), async (req, res) => {
@@ -78,65 +93,57 @@ routes.post('/', authorize('admin'), async (req, res, next) => {
   }
 });
 
-routes.get('/:userId', authorize('admin'), async (req, res, next) => {
-  try {
-    const user = await new User({ userId: req.params.userId }).fetch();
-    res.json(user);
-  } catch (e) {
-    if (e.message === 'EmptyResponse') {
-      res.status(404).json({ message: 'User not found' });
-    } else {
-      next(e);
-    }
-  }
+routes.get('/:userId', authorize('admin'), fetchUser(), (req, res) => {
+  res.json(req.user);
 });
 
-routes.patch('/:userId', authorize('admin'), async (req, res, next) => {
-  try {
-    const user = await new User({ userId: req.params.userId }).fetch();
-    const fields = req.body;
-    if (fields.name) {
-      user.set('firstname', fields.firstname);
-    }
-    if (fields.surname) {
-      user.set('lastname', fields.lastname);
-    }
-    if (fields.role) {
-      user.set('role', fields.role);
-    }
-    if (fields.email) {
-      user.set('email', fields.email);
-    }
-    if (fields.password) {
-      user.set('password', fields.password);
-    }
-    if (fields.memberNumber) {
-      user.set('memberNumber', fields.memberNumber);
-    }
-    const saved = await user.save();
-    res.json(saved.attributes);
-  } catch (e) {
-    if (e.message === 'EmptyResponse') {
-      res.status(404).json({ message: 'User not found' });
-    } else {
+routes.patch(
+  '/:userId',
+  authorize('admin'),
+  fetchUser(),
+  async (req, res, next) => {
+    try {
+      const { user, body } = req;
+      if (body.name) {
+        user.set('firstname', body.firstname);
+      }
+      if (body.surname) {
+        user.set('lastname', body.lastname);
+      }
+      if (body.role) {
+        user.set('role', body.role);
+      }
+      if (body.email) {
+        user.set('email', body.email);
+      }
+      if (body.password) {
+        user.set('password', body.password);
+      }
+      if (body.memberNumber) {
+        user.set('memberNumber', body.memberNumber);
+      }
+      const saved = await user.save();
+      res.json(saved.attributes);
+    } catch (e) {
       next(e);
     }
-  }
-});
+  },
+);
 
-routes.delete('/:userId', authorize('admin'), async (req, res, next) => {
-  try {
-    await new User({ userId: req.params.userId }).destroy();
-    res.json({
-      message: `User ${req.params.userId} destroyed`,
-    });
-  } catch (e) {
-    if (e.message === 'EmptyResponse') {
-      res.status(404).json({ message: 'User not found' });
-    } else {
+routes.delete(
+  '/:userId',
+  authorize('admin'),
+  fetchUser(),
+  async (req, res, next) => {
+    try {
+      await req.user.destroy();
+      res.json({
+        message: `User ${req.params.userId} destroyed`,
+      });
+    } catch (e) {
       next(e);
     }
-  }
-});
+  },
+);
 
 module.exports = routes;
