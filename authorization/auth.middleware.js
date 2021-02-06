@@ -25,6 +25,12 @@ module.exports.authorize = function (role = null) {
         req.auth.user = new User({ userId: req.auth.payload.sub }).fetch();
       }
 
+      if (req.auth.payload.type !== 'access-token') {
+        throw Error(
+          `Unauthorized access for token ${token} requested type 'access-token'`,
+        );
+      }
+
       if (role && req.auth.role !== role) {
         throw Error(
           `Unauthorized access for token ${token} requested role ${role}`,

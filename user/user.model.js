@@ -73,7 +73,7 @@ const User = orm.model(
         .from('users')
         .where(_.snakeCase(fieldName), '=', fieldValue);
       if (userId) {
-        query = query.where('user_id', '=', userId);
+        query = query.where('user_id', '!=', userId);
       }
       const resp = await query;
       return resp.length > 0;

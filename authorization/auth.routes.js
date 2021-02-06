@@ -28,6 +28,7 @@ routes.post('/login', async (req, res) => {
     }
     await user.authenticate(req.body.password);
     const tokenResponse = createToken(user.get('userId'), {
+      type: 'access-token',
       role: user.get('role'),
       email: user.get('email'),
       firstname: user.get('firstname'),
@@ -52,7 +53,7 @@ routes.get('/public-key', async (req, res) => {
   res.send(getPublicKey());
 });
 
-routes.get('/forgot', async (req, res) => {
+routes.post('/forgot-password', async (req, res) => {
   try {
     let user = await new User({ email: req.body.identity }).fetch({
       require: false,
@@ -71,11 +72,13 @@ routes.get('/forgot', async (req, res) => {
 
     const resetToken = createToken(
       user.get('userId'),
-      { resetPassword: true },
+      { type: 'reset-password' },
       '1h',
     );
 
-    const resetPasswordUrl = `${req.query.resetUrl}?token=${resetToken}`;
+    const resetPasswordUrl = `${req.query.resetUrl}?token=${encodeURIComponent(
+      resetToken,
+    )}`;
 
     await mailer.sendMail({
       from: config.get('email').defaultFrom,
@@ -103,10 +106,15 @@ routes.get('/forgot', async (req, res) => {
   }
 });
 
-routes.get('/reset-password', async (req, res) => {
+routes.post('/reset-password', async (req, res) => {
   try {
     const token = getAuthFromHeaders(req.headers);
     const payload = verifyToken(token);
+
+    if (payload.type !== 'reset-password') {
+      throw Error(`Invalid type token ${payload.type}`);
+    }
+
     const user = await new User({ userId: payload.sub }).fetch();
 
     user.set('password', req.body.password);
