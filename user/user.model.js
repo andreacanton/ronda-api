@@ -27,7 +27,7 @@ const User = orm.model(
       );
 
       this.on('updating', () => {
-        this.attributes.updated_at = new Date();
+        this.attributes.updatedAt = new Date();
       });
       this.on('saving', this.validateSave);
     },
