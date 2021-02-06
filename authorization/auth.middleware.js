@@ -29,14 +29,12 @@ module.exports.authorize = function (role = null) {
 
       if (req.auth.payload.type !== 'access-token') {
         throw Error(
-          `Unauthorized access for token ${token} requested type 'access-token'`,
+          "Unauthorized access for token requested type 'access-token'",
         );
       }
 
       if (role && req.auth.payload.role !== role) {
-        throw Error(
-          `Unauthorized access for token ${token} requested role ${role}`,
-        );
+        throw Error(`Unauthorized access for token requested role ${role}`);
       }
       return next();
     } catch (error) {
