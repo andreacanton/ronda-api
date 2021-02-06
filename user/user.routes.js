@@ -28,16 +28,20 @@ routes.get('/', authorize('admin'), async (req, res) => {
   res.json(users);
 });
 
-routes.get('/is-taken/:fieldName/:fieldValue', async (req, res) => {
-  const isTaken = await User.isFieldTaken(
-    req.params.fieldName,
-    req.params.fieldValue,
-    req.query.userId,
-  );
-  res.json({
-    isTaken,
-  });
-});
+routes.get(
+  '/is-taken/:fieldName/:fieldValue',
+  authorize('admin'),
+  async (req, res) => {
+    const isTaken = await User.isFieldTaken(
+      req.params.fieldName,
+      req.params.fieldValue,
+      req.query.userId,
+    );
+    res.json({
+      isTaken,
+    });
+  },
+);
 
 routes.get('/profile', authorize(), async (req, res) => {
   res.json(req.auth.user);
