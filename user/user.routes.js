@@ -56,7 +56,8 @@ routes.post('/', authorize('admin'), async (req, res, next) => {
       password: params.password,
       email: params.email,
       memberNumber: params.memberNumber,
-      role: params.role,
+      role: params.role || 'member',
+      status: params.status || 'enabled',
     }).save();
 
     if (user.get('email') && req.query.resetUrl) {
@@ -125,6 +126,9 @@ routes.patch(
       }
       if (body.memberNumber) {
         user.set('memberNumber', body.memberNumber);
+      }
+      if (body.status) {
+        user.set('status', body.status);
       }
       const saved = await user.save();
       res.json(saved.attributes);
