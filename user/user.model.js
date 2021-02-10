@@ -3,6 +3,7 @@ const CheckIt = require('checkit');
 const orm = require('../db');
 
 const AVAILABLE_ROLES = ['member', 'admin'];
+const AVAILABLE_STATUSES = ['enabled', 'disabled'];
 
 const User = orm.model(
   'User',
@@ -58,6 +59,7 @@ const User = orm.model(
             ),
         ],
         role: (value) => AVAILABLE_ROLES.includes(value),
+        status: (value) => AVAILABLE_STATUSES.includes(value),
       }).run(this.attributes);
     },
     parse(response) {

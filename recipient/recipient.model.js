@@ -2,6 +2,8 @@ const _ = require('lodash');
 const CheckIt = require('checkit');
 const orm = require('../db');
 
+const AVAILABLE_STATUSES = ['enabled', 'disabled'];
+
 const Recipient = orm.model(
   'Recipient',
   {
@@ -37,6 +39,7 @@ const Recipient = orm.model(
                 throw new Error('Card Number already registered');
             }),
         ],
+        status: (value) => AVAILABLE_STATUSES.includes(value),
       }).run(this.attributes);
     },
     parse(response) {
