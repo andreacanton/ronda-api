@@ -1,32 +1,38 @@
+const bcrypt = require('bcrypt');
+
 exports.seed = async (knex) => {
   await knex('users').del();
+  const digest = bcrypt.hashSync('password01', 12);
   await knex('users').insert([
     {
-      userId: 1,
-      memberNumber: 1072,
+      user_id: 1,
+      member_number: 1072,
       email: 'asurname@test.com',
-      password_digest: '123456789876543',
-      name: 'A',
-      surname: 'ASurname',
+      password_digest: digest,
+      firstname: 'A',
+      lastname: 'ASurname',
       role: 'admin',
+      status: 'enabled',
     },
     {
-      userId: 2,
-      memberNumber: 1070,
+      user_id: 2,
+      member_number: 102,
       email: 'bsurname@test.com',
-      password_digest: 'asdfasdfasdfasdfasd',
-      name: 'B',
-      surname: 'BSurname',
+      password_digest: digest,
+      firstname: 'B',
+      lastname: 'BSurname',
       role: 'member',
+      status: 'enabled',
     },
     {
-      userId: 3,
-      memberNumber: 1071,
+      user_id: 3,
+      member_number: 574,
       email: 'csurname@test.com',
-      password_digest: 'nugoniugrnuirgnurglniualb4iu',
-      name: 'C',
-      surname: 'CSurname',
+      password_digest: digest,
+      firstname: 'C',
+      lastname: 'CSurname',
       role: 'member',
+      status: 'enabled',
     },
   ]);
 };
