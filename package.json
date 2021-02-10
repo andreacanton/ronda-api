@@ -25,6 +25,7 @@
   "author": "Andrea Canton <hello@andreacanton.dev>",
   "license": "MIT",
   "dependencies": {
+    "bcrypt": "^3.0.8",
     "bcrypt-nodejs": "^0.0.3",
     "body-parser": "^1.19.0",
     "bookshelf": "^1.2.0",
