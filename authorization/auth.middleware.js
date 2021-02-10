@@ -5,11 +5,9 @@ const User = require('../user/user.model');
 
 module.exports.authorize = function (role = null) {
   return async (req, res, next) => {
-    if (
-      req.method === 'OPTIONS' &&
+    if (req.method === 'OPTIONS' &&
       // eslint-disable-next-line no-prototype-builtins
-      req.headers.hasOwnProperty('access-control-request-headers')
-    ) {
+      req.headers.hasOwnProperty('access-control-request-headers')) {
       return next();
     }
 
@@ -24,6 +22,7 @@ module.exports.authorize = function (role = null) {
       if (req.auth.payload.sub) {
         req.auth.user = await new User({
           userId: req.auth.payload.sub,
+          status: 'enabled',
         }).fetch();
       }
 
@@ -40,6 +39,7 @@ module.exports.authorize = function (role = null) {
       res.status(401).json({
         message: `Unauthorized access. ${error}`,
       });
+      return null;
     }
   };
 };

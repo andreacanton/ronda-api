@@ -15,12 +15,13 @@ const routes = express.Router();
 
 routes.post('/login', async (req, res) => {
   try {
-    let user = await new User({ email: req.body.identity }).fetch({
+    let user = await new User({ email: req.body.identity, status: 'enabled' }).fetch({
       require: false,
     });
     if (!user) {
       user = await new User({
         memberNumber: req.body.identity,
+        status: 'enabled',
       }).fetch({ require: false });
     }
     if (!user) {
