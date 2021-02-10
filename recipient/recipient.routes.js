@@ -93,6 +93,9 @@ routes.patch(
       if (fields.shoeSize) {
         recipient.set('shoeSize', fields.shoeSize);
       }
+      if (fields.status) {
+        recipient.set('status', fields.status);
+      }
       const saved = await recipient.save();
       res.json(saved.attributes);
     } catch (e) {
