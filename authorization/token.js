@@ -16,15 +16,11 @@ function signToken(subject, payload, expiration = null) {
 
 module.exports.createToken = signToken;
 
-// eslint-disable-next-line func-names
-module.exports.verifyToken = function (token) {
-  return jwt.verify(token, PUBLIC_KEY, {
-    algorithm: 'RS256',
-  });
-};
+module.exports.verifyToken = (token) => jwt.verify(token, PUBLIC_KEY, {
+  algorithm: 'RS256',
+});
 
-// eslint-disable-next-line func-names
-module.exports.refreshToken = function (token) {
+module.exports.refreshToken = (token) => {
   const payload = jwt.verify(token, PUBLIC_KEY, { ignoreExpiration: true });
   const subject = payload.sub;
   delete payload.sub;
@@ -35,6 +31,4 @@ module.exports.refreshToken = function (token) {
   return signToken(subject, payload);
 };
 
-module.exports.getPublicKey = function () {
-  return PUBLIC_KEY.toString();
-};
+module.exports.getPublicKey = () => PUBLIC_KEY.toString();
