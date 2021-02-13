@@ -110,9 +110,10 @@ routes.delete(
   fetchRecipient(),
   async (req, res, next) => {
     try {
-      await req.recipient.destroy();
+      req.recipient.set('status', 'disabled');
+      await req.recipient.save();
       res.json({
-        message: `recipient ${req.params.recipientId} destroyed`,
+        message: `recipient ${req.params.recipientId} disactivated`,
       });
     } catch (e) {
       next(e);

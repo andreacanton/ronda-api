@@ -144,9 +144,10 @@ routes.delete(
   fetchUser(),
   async (req, res, next) => {
     try {
-      await req.user.destroy();
+      req.user.set('status', 'disabled');
+      await req.user.save();
       res.json({
-        message: `User ${req.params.userId} destroyed`,
+        message: `User ${req.params.userId} disactivated`,
       });
     } catch (e) {
       next(e);
