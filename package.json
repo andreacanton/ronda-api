@@ -15,7 +15,7 @@
     "test-ci": "cross-env NODE_ENV=test jest --coverage --forceExit",
     "db:migrate": "knex --cwd ./db migrate:latest",
     "db:rollback": "knex --cwd ./db migrate:rollback",
-    "db:reset": "knex --cwd ./db migrate:rollback --all && npm run db:migrate",
+    "db:reset": "knex --cwd ./db migrate:rollback --all && npm run db:migrate && npm run db:seed",
     "db:seed": "knex --cwd ./db seed:run"
   },
   "keywords": [
