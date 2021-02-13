@@ -1,25 +1,20 @@
 const express = require('express');
 const { authorize } = require('../authorization/auth.middleware');
-const config = require('../config');
-const mailer = require('../mailer');
-const logger = require('../logger');
 const Recipient = require('./recipient.model');
 
-const fetchRecipient = function () {
-  return async (req, res, next) => {
-    try {
-      req.recipient = await new Recipient({
-        recipientId: req.params.recipientId,
-      }).fetch();
-      next();
-    } catch (e) {
-      if (e.message === 'EmptyResponse') {
-        res.status(404).json({ message: 'Recipient not found' });
-      } else {
-        next(e);
-      }
+const fetchRecipient = () => async (req, res, next) => {
+  try {
+    req.recipient = await new Recipient({
+      recipientId: req.params.recipientId,
+    }).fetch();
+    next();
+  } catch (e) {
+    if (e.message === 'EmptyResponse') {
+      res.status(404).json({ message: 'Recipient not found' });
+    } else {
+      next(e);
     }
-  };
+  }
 };
 
 const routes = express.Router();
@@ -113,7 +108,7 @@ routes.delete(
       req.recipient.set('status', 'disabled');
       await req.recipient.save();
       res.json({
-        message: `recipient ${req.params.recipientId} disactivated`,
+        message: `recipient ${req.params.recipientId} deactivated`,
       });
     } catch (e) {
       next(e);

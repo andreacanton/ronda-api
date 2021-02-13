@@ -1,4 +1,4 @@
-module.exports.getAuthFromHeaders = function (headers) {
+module.exports.getAuthFromHeaders = (headers) => {
   let token;
   const parts = headers.authorization.split(' ');
   if (parts.length === 2) {
