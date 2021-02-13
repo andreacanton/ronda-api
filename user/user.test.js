@@ -1,4 +1,5 @@
 const orm = require('../db/index');
+const logger = require('../logger');
 const User = require('./user.model');
 
 beforeAll(async () => {
@@ -25,22 +26,22 @@ describe('User model', () => {
   test('User fetch id 5 should fail', () =>
     expect(new User({ userId: 5 }).fetch()).rejects.toThrow('EmptyResponse'));
 
-  // test('User should create', async () => {
-  //   const user = new User({
-  //     memberNumber: 200,
-  //     email: 'andrea.canton@gmail.com',
-  //     role: 'member',
-  //     password: 'Password01',
-  //   });
-  //   expect.assertions(4);
-  //   try {
-  //     const saved = await user.save();
-  //     expect(saved.attributes.userId).toBeDefined();
-  //     expect(saved.attributes.created_at).toBeDefined();
-  //     expect(saved.attributes.role).toBe('member');
-  //     expect(saved.attributes.password).toBeUndefined();
-  //   } catch (e) {
-  //     logger.error(e);
-  //   }
-  // });
+  test('User should create', async () => {
+    const user = new User({
+      memberNumber: 200,
+      email: 'andrea.canton@gmail.com',
+      role: 'member',
+      password: 'Password01',
+    });
+    expect.assertions(4);
+    try {
+      const saved = await user.save();
+      expect(saved.attributes.userId).toBeDefined();
+      expect(saved.attributes.createdAt).toBeDefined();
+      expect(saved.attributes.role).toBe('member');
+      expect(saved.attributes.password).toBeUndefined();
+    } catch (e) {
+      logger.error(e);
+    }
+  });
 });
