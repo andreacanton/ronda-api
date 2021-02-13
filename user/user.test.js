@@ -19,7 +19,7 @@ describe('User model', () => {
   test('User fetch by id', async () => {
     const user = await new User({ userId: 2 }).fetch();
     expect(user.get('userId')).toEqual(2);
-    expect(user.get('name')).toBe('B');
+    expect(user.get('firstname')).toBe('B');
     expect(user.get('role')).toBe('member');
   });
   test('User fetch id 5 should fail', () =>
