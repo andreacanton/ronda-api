@@ -68,4 +68,14 @@ describe('User model', () => {
       expect(e).toBeDefined();
     }
   });
+  test('User should not update role not available', async () => {
+    expect.assertions(1);
+    const user = new User({ memberNumber: 1 }).fetch();
+    try {
+      user.role = 'enabled';
+      await user.save();
+    } catch (e) {
+      expect(e).toBeDefined();
+    }
+  });
 });
