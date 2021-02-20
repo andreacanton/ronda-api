@@ -1,5 +1,7 @@
 # API per la Ronda della Carità di Verona
 
+[![Node.js CI](https://github.com/andreacanton/ronda-api/actions/workflows/node.js.yml/badge.svg)](https://github.com/andreacanton/ronda-api/actions/workflows/node.js.yml)
+
 Per far partire l'ambiente di sviluppo
 
 far partire il server database (es. con Homebrew su mac)
