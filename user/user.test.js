@@ -70,9 +70,31 @@ describe('User model', () => {
   });
   test('User should not update role not available', async () => {
     expect.assertions(1);
-    const user = new User({ memberNumber: 1 }).fetch();
+    const user = new User({ userId: 1 }).fetch();
     try {
       user.role = 'enabled';
+      await user.save();
+    } catch (e) {
+      expect(e).toBeDefined();
+    }
+  });
+
+  test('User should not save already registered email', async () => {
+    expect.assertions(1);
+    const user = new User({ userId: 1 }).fetch();
+    try {
+      user.email = 'bsurname@test.com';
+      await user.save();
+    } catch (e) {
+      expect(e).toBeDefined();
+    }
+  });
+
+  test('User should not save already registered email', async () => {
+    expect.assertions(1);
+    const user = new User({ userId: 1 }).fetch();
+    try {
+      user.memberNumber = 574;
       await user.save();
     } catch (e) {
       expect(e).toBeDefined();
