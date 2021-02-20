@@ -44,4 +44,17 @@ describe('User model', () => {
       logger.error(e);
     }
   });
+  test('User should update', async () => {
+    const user = new User({ memberNumber: 1 }).fetch();
+    try {
+      user.role = 'admin';
+      const updated = await user.save();
+      expect(updated.attributes.createdAt).toBeDefined();
+      expect(updated.attributes.lastname).toBe('ASurname');
+      expect(updated.attributes.role).toBe('admin');
+      expect(updated.attributes.password).toBeUndefined();
+    } catch (e) {
+      logger.error(e);
+    }
+  });
 });
