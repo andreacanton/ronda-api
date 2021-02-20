@@ -57,4 +57,15 @@ describe('User model', () => {
       logger.error(e);
     }
   });
+
+  test('User should not update status not available', async () => {
+    expect.assertions(1);
+    const user = new User({ memberNumber: 1 }).fetch();
+    try {
+      user.status = 'admin';
+      await user.save();
+    } catch (e) {
+      expect(e).toBeDefined();
+    }
+  });
 });
