@@ -1,6 +1,7 @@
 # API per la Ronda della Carità di Verona
 
-[![Node.js CI](https://github.com/andreacanton/ronda-api/actions/workflows/node.js.yml/badge.svg)](https://github.com/andreacanton/ronda-api/actions/workflows/node.js.yml)
+[![Testing](https://github.com/andreacanton/ronda-api/actions/workflows/node.js.yml/badge.svg)](https://github.com/andreacanton/ronda-api/actions/workflows/node.js.yml) 
+[![codecov](https://codecov.io/gh/andreacanton/ronda-api/branch/master/graph/badge.svg?token=ZIXPRXVF9J)](https://codecov.io/gh/andreacanton/ronda-api)
 
 Per far partire l'ambiente di sviluppo
 
