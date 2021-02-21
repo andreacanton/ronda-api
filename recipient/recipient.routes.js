@@ -20,7 +20,14 @@ const fetchRecipient = () => async (req, res, next) => {
 const routes = express.Router();
 
 routes.get('/', authorize(), async (req, res) => {
-  const recipients = await Recipient.fetchAll();
+  const recipients = await Recipient.fetchWithFilters({
+    search: req.query.q,
+    page: req.query.p || 1,
+    pageSize: req.query.psize || 20,
+    status: req.query.status,
+    sort: req.query.sort,
+    direction: req.query.dir,
+  });
   res.json(recipients);
 });
 

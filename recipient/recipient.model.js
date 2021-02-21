@@ -60,6 +60,30 @@ const Recipient = orm.model(
       const resp = await query;
       return resp.length > 0;
     },
+    fetchWithFilters({
+      search,
+      page = 1,
+      pageSize = 20,
+      status,
+      sort,
+      direction = 'ASC',
+    }) {
+      let query = this.query();
+      if (search) {
+        query = query
+          .where('firstname', 'LIKE', `%${search}%`)
+          .orWhere('lastname', 'LIKE', `%${search}%`)
+          .orWhere('email', 'LIKE', `%${search}%`)
+          .orWhere('card_number', 'LIKE', `%${search}%`);
+      }
+      if (status) {
+        query = query.where('status', '=', status);
+      }
+      if (sort) {
+        query = query.orderBy(_.snakeCase(sort), direction);
+      }
+      return query.limit(pageSize).offset((pageSize * (page - 1)));
+    },
   },
 );
 
