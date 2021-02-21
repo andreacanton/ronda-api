@@ -22,7 +22,14 @@ const fetchUser = () => async (req, res, next) => {
 const routes = express.Router();
 
 routes.get('/', authorize('admin'), async (req, res) => {
-  const users = await User.fetchAll();
+  const users = await User.fetchWithFilters({
+    search: req.query.q,
+    page: req.query.p || 1,
+    pageSize: req.query.psize || 20,
+    status: req.query.status,
+    sort: req.query.sort,
+    direction: req.query.dir,
+  });
   res.json(users);
 });
 

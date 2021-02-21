@@ -90,6 +90,30 @@ const User = orm.model(
       }
       return response[0];
     },
+    fetchWithFilters({
+      search,
+      page = 1,
+      pageSize = 20,
+      status,
+      sort,
+      direction = 'ASC',
+    }) {
+      let query = this.query();
+      if (search) {
+        query = query
+          .where('firstname', 'LIKE', `%${search}%`)
+          .orWhere('lastname', 'LIKE', `%${search}%`)
+          .orWhere('email', 'LIKE', `%${search}%`)
+          .orWhere('member_number', 'LIKE', `%${search}%`);
+      }
+      if (status) {
+        query = query.where('status', '=', status);
+      }
+      if (sort) {
+        query = query.orderBy(_.snakeCase(sort), direction);
+      }
+      return query.limit(pageSize).offset((pageSize * (page - 1)));
+    },
   },
 );
 
