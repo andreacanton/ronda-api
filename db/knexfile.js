@@ -40,7 +40,6 @@ module.exports = {
     seeds: {
       directory: './db/seeds/test',
     },
-    debug: true,
   },
   production: {
     client: dbConfig.client,
