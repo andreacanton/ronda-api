@@ -29,23 +29,24 @@ describe('User model', () => {
   test('User should create', async () => {
     const user = new User({
       memberNumber: 200,
-      email: 'andrea.canton@gmail.com',
+      email: 'creation.testing@test.com',
       role: 'member',
       password: 'Password01',
     });
+    expect(user.isNew()).toBe(true);
     expect.assertions(4);
     try {
       const saved = await user.save();
-      expect(saved.attributes.userId).toBeDefined();
-      expect(saved.attributes.createdAt).toBeDefined();
-      expect(saved.attributes.role).toBe('member');
-      expect(saved.attributes.password).toBeUndefined();
+      expect(saved.get('userId')).toBeDefined();
+      expect(saved.get('createdAt')).toBeDefined();
+      expect(saved.get('role')).toBe('member');
+      expect(saved.get('password')).toBeUndefined();
     } catch (e) {
       logger.error(e);
     }
   });
   test('User should update', async () => {
-    const user = new User({ memberNumber: 1 }).fetch();
+    const user = new User({ memberNumber: 1072 }).fetch();
     try {
       user.role = 'admin';
       const updated = await user.save();
@@ -60,7 +61,7 @@ describe('User model', () => {
 
   test('User should not update status not available', async () => {
     expect.assertions(1);
-    const user = new User({ memberNumber: 1 }).fetch();
+    const user = new User({ memberNumber: 1072 }).fetch();
     try {
       user.status = 'admin';
       await user.save();
