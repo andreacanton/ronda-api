@@ -9,6 +9,7 @@ const Recipient = orm.model(
   {
     tableName: 'recipients',
     idAttribute: 'recipient_id',
+    hasTimestamps: true,
     initialize() {
       this.on(
         'creating',
@@ -19,10 +20,6 @@ const Recipient = orm.model(
           }).run(this.attributes),
         // eslint-disable-next-line function-paren-newline
       );
-
-      this.on('updating', () => {
-        this.attributes.updatedAt = new Date();
-      });
       this.on('saving', this.validateSave);
     },
     validateSave() {

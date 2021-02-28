@@ -11,6 +11,7 @@ const User = orm.model(
     tableName: 'users',
     idAttribute: 'user_id',
     hasSecurePassword: 'passwordDigest',
+    hasTimestamps: true,
     defaults: {
       role: 'member',
     },
@@ -24,12 +25,7 @@ const User = orm.model(
             memberNumber: ['required'],
             passwordDigest: ['required'],
           }).run(this.attributes),
-        // eslint-disable-next-line function-paren-newline
       );
-
-      this.on('updating', () => {
-        this.attributes.updatedAt = new Date();
-      });
       this.on('saving', this.validateSave);
     },
     validateSave() {
@@ -42,9 +38,9 @@ const User = orm.model(
               value,
               this.attributes.userId,
             ).then((exists) => {
-              if (exists)
-                // eslint-disable-next-line nonblock-statement-body-position
+              if (exists) {
                 throw new Error('Member Number already registered');
+              }
             }),
         ],
         email: [
@@ -52,9 +48,9 @@ const User = orm.model(
           (value) =>
             User.isFieldTaken('email', value, this.attributes.userId).then(
               (exists) => {
-                if (exists)
-                  // eslint-disable-next-line nonblock-statement-body-position
+                if (exists) {
                   throw new Error('Email already registered');
+                }
               },
             ),
         ],
