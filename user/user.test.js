@@ -34,7 +34,7 @@ describe('User model', () => {
       password: 'Password01',
     });
     expect(user.isNew()).toBe(true);
-    expect.assertions(4);
+    expect.assertions(5);
     try {
       const saved = await user.save();
       expect(saved.get('userId')).toBeDefined();
