@@ -1,6 +1,8 @@
+const { v4: uuidV4 } = require('uuid');
+
 exports.up = (knex) =>
   knex.schema.createTable('users', (t) => {
-    t.increments('user_id').primary();
+    t.string('user_id', 36).primary().defaultTo(uuidV4());
     t.integer('member_number')
       .unsigned()
       .unique()

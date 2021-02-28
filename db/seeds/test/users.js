@@ -5,7 +5,7 @@ exports.seed = async (knex) => {
   const digest = bcrypt.hashSync('password01', 12);
   await knex('users').insert([
     {
-      user_id: 1,
+      user_id: 'abf65ce3-1a02-475a-a434-dcda9131f068',
       member_number: 1072,
       email: 'asurname@test.com',
       password_digest: digest,
@@ -15,7 +15,7 @@ exports.seed = async (knex) => {
       status: 'enabled',
     },
     {
-      user_id: 2,
+      user_id: '2272e61b-59b5-4da3-9ab6-27c804930ca5',
       member_number: 102,
       email: 'bsurname@test.com',
       password_digest: digest,
@@ -25,7 +25,7 @@ exports.seed = async (knex) => {
       status: 'enabled',
     },
     {
-      user_id: 3,
+      user_id: '28416a42-b4d4-4620-8004-b73532b8b2d8',
       member_number: 574,
       email: 'csurname@test.com',
       password_digest: digest,

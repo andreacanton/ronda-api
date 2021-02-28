@@ -45,6 +45,7 @@
     "mock-knex": "^0.4.9",
     "mysql2": "^2.2.5",
     "nodemailer": "^6.4.17",
+    "uuid": "^8.3.2",
     "winston": "^3.3.3"
   },
   "devDependencies": {

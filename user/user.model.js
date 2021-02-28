@@ -1,5 +1,6 @@
 const _ = require('lodash');
 const CheckIt = require('checkit');
+const { v4: uuidV4 } = require('uuid');
 const orm = require('../db');
 
 const AVAILABLE_ROLES = ['member', 'admin'];
@@ -18,19 +19,17 @@ const User = orm.model(
     initialize() {
       this.on(
         'creating',
-        () =>
-          CheckIt({
-            email: ['required', 'email'],
-            role: ['required'],
-            memberNumber: ['required'],
-            passwordDigest: ['required'],
-          }).run(this.attributes),
+        () => {
+          this.set('userId', uuidV4());
+        },
       );
       this.on('saving', this.validateSave);
     },
     validateSave() {
       return CheckIt({
+        passwordDigest: ['required'],
         memberNumber: [
+          'required',
           'integer',
           (value) =>
             User.isFieldTaken(
@@ -44,6 +43,7 @@ const User = orm.model(
             }),
         ],
         email: [
+          'required',
           'email',
           (value) =>
             User.isFieldTaken('email', value, this.attributes.userId).then(
@@ -54,8 +54,8 @@ const User = orm.model(
               },
             ),
         ],
-        role: (value) => AVAILABLE_ROLES.includes(value),
-        status: (value) => AVAILABLE_STATUSES.includes(value),
+        role: ['required', (value) => AVAILABLE_ROLES.includes(value)],
+        status: ['required', (value) => AVAILABLE_STATUSES.includes(value)],
       }).run(this.attributes);
     },
     parse(response) {
@@ -76,16 +76,6 @@ const User = orm.model(
       const resp = await query;
       return resp.length > 0;
     },
-    async fetchFromIdentity(identity) {
-      const response = await orm.knex
-        .from('users')
-        .where('email', '=', identity)
-        .orWhere('member_number', '=', identity);
-      if (response.length === 0) {
-        throw Error('No user found');
-      }
-      return response[0];
-    },
     fetchWithFilters({
       search,
       page = 1,
@@ -94,7 +84,7 @@ const User = orm.model(
       sort,
       direction = 'ASC',
     }) {
-      let query = this.query();
+      let query = this.collection().query();
       if (search) {
         query = query
           .where('firstname', 'LIKE', `%${search}%`)
