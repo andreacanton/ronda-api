@@ -64,6 +64,9 @@ const User = orm.model(
     format(attributes) {
       return _.mapKeys(attributes, (value, key) => _.snakeCase(key));
     },
+    tokens() {
+      return this.hasMany('Token');
+    },
   },
   {
     async isFieldTaken(fieldName, fieldValue, userId = null) {
