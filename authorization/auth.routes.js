@@ -8,7 +8,7 @@ const {
   refreshToken,
   getPublicKey,
   verifyToken,
-} = require('./token');
+} = require('./auth.helper');
 const { getAuthFromHeaders } = require('./auth.helper');
 
 const routes = express.Router();

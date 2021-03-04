@@ -1,6 +1,6 @@
 const express = require('express');
 const { authorize } = require('../authorization/auth.middleware');
-const { createToken } = require('../authorization/token');
+const { createToken } = require('../authorization/auth.helper');
 const config = require('../config');
 const mailer = require('../mailer');
 const logger = require('../logger');

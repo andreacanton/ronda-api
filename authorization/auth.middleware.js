@@ -1,6 +1,5 @@
 const logger = require('../logger');
-const { verifyToken } = require('./token');
-const { getAuthFromHeaders } = require('./auth.helper');
+const { verifyToken, getAuthFromHeaders } = require('./auth.helper');
 const User = require('../user/user.model');
 
 module.exports.authorize = (role = null) => async (req, res, next) => {
