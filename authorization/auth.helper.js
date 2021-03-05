@@ -5,7 +5,7 @@ const config = require('../config');
 const PRIVATE_KEY = fs.readFileSync(`${__dirname}/private_key.pem`);
 const PUBLIC_KEY = fs.readFileSync(`${__dirname}/public_key.pem`);
 
-function signToken(subject, payload, expiration = null) {
+function signJwtToken(subject, payload, expiration = null) {
   const token = jwt.sign(payload, PRIVATE_KEY, {
     algorithm: 'RS256',
     subject: subject.toString(),
@@ -14,13 +14,13 @@ function signToken(subject, payload, expiration = null) {
   return token;
 }
 
-module.exports.createToken = signToken;
+module.exports.createJwt = signJwtToken;
 
 module.exports.verifyJwt = (token) => jwt.verify(token, PUBLIC_KEY, {
   algorithm: 'RS256',
 });
 
-module.exports.refreshToken = (token) => {
+module.exports.refreshJwt = (token) => {
   const payload = jwt.verify(token, PUBLIC_KEY, { ignoreExpiration: true });
   const subject = payload.sub;
   delete payload.sub;
@@ -28,7 +28,7 @@ module.exports.refreshToken = (token) => {
   delete payload.exp;
   delete payload.nbf;
   delete payload.jti;
-  return signToken(subject, payload);
+  return signJwtToken(subject, payload);
 };
 
 module.exports.getPublicKey = () => PUBLIC_KEY.toString();

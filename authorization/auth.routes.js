@@ -4,10 +4,10 @@ const User = require('../user/user.model');
 const config = require('../config');
 const mailer = require('../mailer');
 const {
-  createToken,
-  refreshToken,
+  createJwt,
+  refreshJwt,
   getPublicKey,
-  verifyToken,
+  verifyJwt,
 } = require('./auth.helper');
 const { getAuthFromHeaders } = require('./auth.helper');
 
@@ -28,7 +28,7 @@ routes.post('/login', async (req, res) => {
       throw Error(`User not found for identity ${req.body.identity}`);
     }
     await user.authenticate(req.body.password);
-    const tokenResponse = createToken(user.get('userId'), {
+    const tokenResponse = createJwt(user.get('userId'), {
       type: 'access-token',
       role: user.get('role'),
       email: user.get('email'),
@@ -47,7 +47,7 @@ routes.post('/login', async (req, res) => {
 
 routes.get('/refresh', async (req, res) => {
   const token = getAuthFromHeaders(req.headers);
-  res.json(refreshToken(token));
+  res.json(refreshJwt(token));
 });
 
 routes.get('/public-key', async (req, res) => {
@@ -71,7 +71,7 @@ routes.post('/forgot-password', async (req, res) => {
       throw Error('resetUrl query param missing');
     }
 
-    const resetToken = createToken(
+    const resetToken = createJwt(
       user.get('userId'),
       { type: 'reset-password' },
       '1h',
@@ -110,7 +110,7 @@ routes.post('/forgot-password', async (req, res) => {
 routes.post('/reset-password', async (req, res) => {
   try {
     const token = getAuthFromHeaders(req.headers);
-    const payload = verifyToken(token);
+    const payload = verifyJwt(token);
 
     if (payload.type !== 'reset-password') {
       throw Error(`Invalid type token ${payload.type}`);
