@@ -37,7 +37,7 @@ Per la chiave pubblica:
 openssl rsa -in private_key.pem -outform PEM -pubout -out public_key.pem
 ```
 
-metterle nella cartella `authorization` e leggibili solo localmente.
+metterle nella cartella principale leggibili solo localmente.
 Infine far partire il server node
 
 ```shell
