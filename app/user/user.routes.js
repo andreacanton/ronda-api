@@ -52,7 +52,7 @@ routes.get('/profile', authorize(), async (req, res) => {
   res.json(req.auth.user);
 });
 
-routes.get('/profile', authorize(), async (req, res, next) => {
+routes.patch('/profile', authorize(), async (req, res, next) => {
   res.json(req.auth.user);
   try {
     const { body, auth } = req;
