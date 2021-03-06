@@ -52,6 +52,30 @@ routes.get('/profile', authorize(), async (req, res) => {
   res.json(req.auth.user);
 });
 
+routes.get('/profile', authorize(), async (req, res, next) => {
+  res.json(req.auth.user);
+  try {
+    const { body, auth } = req;
+    const { user } = auth;
+    if (body.name) {
+      user.set('firstname', body.firstname);
+    }
+    if (body.surname) {
+      user.set('lastname', body.lastname);
+    }
+    if (body.email) {
+      user.set('email', body.email);
+    }
+    if (body.password) {
+      user.set('password', body.password);
+    }
+    const saved = await user.save();
+    res.json(saved.attributes);
+  } catch (e) {
+    next(e);
+  }
+});
+
 routes.post('/', authorize('admin'), async (req, res, next) => {
   try {
     const params = req.body;
