@@ -1,8 +1,8 @@
 const express = require('express');
-const logger = require('../logger');
+const logger = require('../../logger');
 const User = require('../user/user.model');
-const config = require('../config');
-const mailer = require('../mailer');
+const config = require('../../config');
+const mailer = require('../../mailer');
 const {
   createJwt,
   refreshJwt,

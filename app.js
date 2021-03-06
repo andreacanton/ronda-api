@@ -3,9 +3,9 @@ const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const logger = require('./logger');
-const authRoutes = require('./authorization/auth.routes');
-const userRoutes = require('./user/user.routes');
-const recipientRoutes = require('./recipient/recipient.routes');
+const authRoutes = require('./app/authorization/auth.routes');
+const userRoutes = require('./app/user/user.routes');
+const recipientRoutes = require('./app/recipient/recipient.routes');
 
 const app = express();
 

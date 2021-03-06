@@ -1,9 +1,9 @@
 const express = require('express');
 const { authorize } = require('../authorization/auth.middleware');
 const { createToken } = require('../authorization/auth.helper');
-const config = require('../config');
-const mailer = require('../mailer');
-const logger = require('../logger');
+const config = require('../../config');
+const mailer = require('../../mailer');
+const logger = require('../../logger');
 const User = require('./user.model');
 
 const fetchUser = () => async (req, res, next) => {

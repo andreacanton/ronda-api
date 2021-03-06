@@ -1,5 +1,5 @@
-const logger = require('../logger');
-const { verifyToken, getAuthFromHeaders } = require('./auth.helper');
+const logger = require('../../logger');
+const { verifyJwt, getAuthFromHeaders } = require('./auth.helper');
 const User = require('../user/user.model');
 
 module.exports.authorize = (role = null) => async (req, res, next) => {
@@ -15,7 +15,7 @@ module.exports.authorize = (role = null) => async (req, res, next) => {
       throw Error('Token not present in header');
     }
     req.auth = {};
-    req.auth.payload = verifyToken(token);
+    req.auth.payload = verifyJwt(token);
 
     if (req.auth.payload.sub) {
       req.auth.user = await new User({

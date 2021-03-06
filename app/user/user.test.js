@@ -1,5 +1,5 @@
-const orm = require('../db/index');
-const logger = require('../logger');
+const orm = require('../../db/index');
+const logger = require('../../logger');
 const User = require('./user.model');
 
 beforeAll(async () => {

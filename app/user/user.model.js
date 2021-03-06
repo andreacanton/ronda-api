@@ -1,42 +1,61 @@
 const _ = require('lodash');
 const CheckIt = require('checkit');
-const orm = require('../db');
+const { v4: uuidV4 } = require('uuid');
+const orm = require('../../db');
 
+const AVAILABLE_ROLES = ['member', 'admin'];
 const AVAILABLE_STATUSES = ['enabled', 'disabled'];
 
-const Recipient = orm.model(
-  'Recipient',
+const User = orm.model(
+  'User',
   {
-    tableName: 'recipients',
-    idAttribute: 'recipient_id',
+    tableName: 'users',
+    idAttribute: 'user_id',
+    hasSecurePassword: 'passwordDigest',
     hasTimestamps: true,
+    defaults: {
+      role: 'member',
+    },
     initialize() {
       this.on(
         'creating',
-        () =>
-          CheckIt({
-            email: ['email'],
-            cardNumber: ['required'],
-          }).run(this.attributes),
-        // eslint-disable-next-line function-paren-newline
+        () => {
+          this.set('userId', uuidV4());
+        },
       );
       this.on('saving', this.validateSave);
     },
     validateSave() {
       return CheckIt({
-        cardNumber: [
+        passwordDigest: ['required'],
+        memberNumber: [
+          'required',
+          'integer',
           (value) =>
-            Recipient.isFieldTaken(
-              'cardNumber',
+            User.isFieldTaken(
+              'memberNumber',
               value,
-              this.attributes.recipientId,
+              this.attributes.userId,
             ).then((exists) => {
-              if (exists)
-                // eslint-disable-next-line nonblock-statement-body-position
-                throw new Error('Card Number already registered');
+              if (exists) {
+                throw new Error('Member Number already registered');
+              }
             }),
         ],
-        status: (value) => AVAILABLE_STATUSES.includes(value),
+        email: [
+          'required',
+          'email',
+          (value) =>
+            User.isFieldTaken('email', value, this.attributes.userId).then(
+              (exists) => {
+                if (exists) {
+                  throw new Error('Email already registered');
+                }
+              },
+            ),
+        ],
+        role: ['required', (value) => AVAILABLE_ROLES.includes(value)],
+        status: ['required', (value) => AVAILABLE_STATUSES.includes(value)],
       }).run(this.attributes);
     },
     parse(response) {
@@ -45,14 +64,17 @@ const Recipient = orm.model(
     format(attributes) {
       return _.mapKeys(attributes, (value, key) => _.snakeCase(key));
     },
+    tokens() {
+      return this.hasMany('Token');
+    },
   },
   {
     async isFieldTaken(fieldName, fieldValue, userId = null) {
       let query = orm.knex
-        .from('recipients')
+        .from('users')
         .where(_.snakeCase(fieldName), '=', fieldValue);
       if (userId) {
-        query = query.where('recipient_id', '!=', userId);
+        query = query.where('user_id', '!=', userId);
       }
       const resp = await query;
       return resp.length > 0;
@@ -65,13 +87,13 @@ const Recipient = orm.model(
       sort,
       direction = 'ASC',
     }) {
-      let query = this.query();
+      let query = this.collection().query();
       if (search) {
         query = query
           .where('firstname', 'LIKE', `%${search}%`)
           .orWhere('lastname', 'LIKE', `%${search}%`)
           .orWhere('email', 'LIKE', `%${search}%`)
-          .orWhere('card_number', 'LIKE', `%${search}%`);
+          .orWhere('member_number', 'LIKE', `%${search}%`);
       }
       if (status) {
         query = query.where('status', '=', status);
@@ -84,4 +106,4 @@ const Recipient = orm.model(
   },
 );
 
-module.exports = Recipient;
+module.exports = User;
