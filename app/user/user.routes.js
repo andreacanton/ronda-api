@@ -1,6 +1,6 @@
 const express = require('express');
 const { authorize } = require('../authorization/auth.middleware');
-const { createToken } = require('../authorization/auth.helper');
+const { createJwt } = require('../authorization/auth.helper');
 const config = require('../../config');
 const mailer = require('../../mailer');
 const logger = require('../../logger');
@@ -66,7 +66,7 @@ routes.post('/', authorize('admin'), async (req, res, next) => {
     }).save();
 
     if (user.get('email') && req.query.resetUrl) {
-      const resetToken = createToken(
+      const resetToken = createJwt(
         user.get('userId'),
         { resetPassword: true },
         '1h',
