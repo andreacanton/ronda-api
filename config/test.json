@@ -1,1 +1,7 @@
-{}
+{
+  "email": {
+    "host": "smtp.mailtrap.io",
+    "user": "0718ea7343a02c",
+    "pass": "f269f075851227"
+  }
+}

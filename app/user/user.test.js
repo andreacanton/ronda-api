@@ -3,10 +3,9 @@ const logger = require('../../logger');
 const User = require('./user.model');
 
 beforeAll(async () => {
-  await orm.knex.migrate.latest();
+  await orm.knex.seed.run();
 });
 beforeEach(async () => {
-  await orm.knex.seed.run();
 });
 afterAll(() => {});
 describe('User model', () => {

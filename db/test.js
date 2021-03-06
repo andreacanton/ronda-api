@@ -1,5 +1,9 @@
 const orm = require('./index');
 
+beforeAll(async () => {
+  await orm.knex.migrate.rollback({}, true);
+  await orm.knex.migrate.latest();
+});
 describe('database', () => {
   test('Orm should be defined', () => {
     expect(orm).toBeDefined();

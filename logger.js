@@ -1,4 +1,7 @@
 const { createLogger, format, transports } = require('winston');
+const config = require('./config');
+
+const ENV = config.get('env');
 
 const stringFormat = format.printf(
   // eslint-disable-next-line object-curly-newline
@@ -12,7 +15,7 @@ const stringFormat = format.printf(
 );
 
 const logger = createLogger({
-  level: process.env.NODE_ENV !== 'production' ? 'debug' : 'info',
+  level: ENV !== 'production' ? 'debug' : 'info',
   format: format.combine(format.timestamp(), format.json()),
   transports: [
     new transports.File({ filename: 'logs/error.log', level: 'error' }),
@@ -20,7 +23,7 @@ const logger = createLogger({
   ],
 });
 
-if (process.env.NODE_ENV !== 'production') {
+if (ENV !== 'production') {
   logger.add(
     new transports.Console({
       format: format.combine(

@@ -1,8 +1,14 @@
 const supertest = require('supertest');
 const app = require('../app');
+const orm = require('../db/index');
 
 const request = supertest(app);
-
+beforeAll(async () => {
+  await orm.knex.seed.run();
+});
+beforeEach(async () => {
+});
+afterAll(() => {});
 describe('POST /auth/login', () => {
   it('responds 200 with json', (done) => {
     request

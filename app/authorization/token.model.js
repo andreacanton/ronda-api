@@ -1,7 +1,7 @@
 const _ = require('lodash');
 const CheckIt = require('checkit');
 const crypto = require('crypto');
-const orm = require('../db');
+const orm = require('../../db');
 
 const Token = orm.model(
   'Token',
