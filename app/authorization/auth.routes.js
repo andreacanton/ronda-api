@@ -1,4 +1,5 @@
 const express = require('express');
+const { addMinutes } = require('date-fns');
 const logger = require('../../logger');
 const User = require('../user/user.model');
 const config = require('../../config');
@@ -7,15 +8,18 @@ const {
   createJwt,
   refreshJwt,
   getPublicKey,
-  verifyJwt,
 } = require('./auth.helper');
 const { getAuthFromHeaders } = require('./auth.helper');
+const Token = require('./token.model');
 
 const routes = express.Router();
 
 routes.post('/login', async (req, res) => {
   try {
-    let user = await new User({ email: req.body.identity, status: 'enabled' }).fetch({
+    let user = await new User({
+      email: req.body.identity,
+      status: 'enabled',
+    }).fetch({
       require: false,
     });
     if (!user) {
@@ -70,15 +74,15 @@ routes.post('/forgot-password', async (req, res) => {
     if (!req.query.resetUrl) {
       throw Error('resetUrl query param missing');
     }
-
-    const resetToken = createJwt(
-      user.get('userId'),
-      { type: 'reset-password' },
-      '1h',
-    );
+    const token = new Token({
+      userId: user.get('userId'),
+      type: 'reset-password',
+      expiration: addMinutes(new Date(), 15),
+    });
+    await token.save();
 
     const resetPasswordUrl = `${req.query.resetUrl}?token=${encodeURIComponent(
-      resetToken,
+      token.get('tokenId'),
     )}`;
 
     await mailer.sendMail({
@@ -96,7 +100,7 @@ routes.post('/forgot-password', async (req, res) => {
         <p>La direzione</p>
       `,
     });
-    logger.debug(`Registration email sent to ${user.email}`);
+    logger.debug(`Reset password email sent to ${user.email}`);
 
     res.json({
       message: 'Reset password email sent!',
@@ -109,15 +113,15 @@ routes.post('/forgot-password', async (req, res) => {
 
 routes.post('/reset-password', async (req, res) => {
   try {
-    const token = getAuthFromHeaders(req.headers);
-    const payload = verifyJwt(token);
+    const tokenId = getAuthFromHeaders(req.headers);
+    const token = await new Token({ tokenId }).fetch({ withRelated: ['user'] });
 
-    if (payload.type !== 'reset-password') {
-      throw Error(`Invalid type token ${payload.type}`);
+    const type = token.get('type');
+    if (type !== 'reset-password') {
+      throw Error(`Invalid type token ${type}`);
     }
 
-    const user = await new User({ userId: payload.sub }).fetch();
-
+    const user = token.related('user');
     user.set('password', req.body.password);
 
     await user.save();

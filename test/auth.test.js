@@ -1,5 +1,7 @@
 const supertest = require('supertest');
 const app = require('../app');
+const Token = require('../app/authorization/token.model');
+const User = require('../app/user/user.model');
 const orm = require('../db/index');
 
 const request = supertest(app);
@@ -57,5 +59,44 @@ describe('POST /auth/login', () => {
         done();
       })
       .catch((err) => done(err));
+  });
+});
+
+describe('Forgot Password process', () => {
+  it('should reset password correctly', async (done) => {
+    try {
+      const user = await new User({ email: 'asurname@test.com' }).fetch();
+      const forgotResponse = await request
+        .post(`/auth/forgot-password?resetUrl=${encodeURI('http://localhost:3001/reset-password')}`)
+        .send({
+          identity: user.get('email'),
+        })
+        .set('Accept', 'application/json')
+        .expect('Content-Type', /json/)
+        .expect(200);
+      expect(forgotResponse.body.message).toBeDefined();
+      const token = await new Token({ userId: user.get('userId'), type: 'reset-password' }).fetch();
+      await request
+        .post('/auth/reset-password')
+        .set('Authorization', `Bearer ${token.get('tokenId')}`)
+        .set('Accept', 'application/json')
+        .send({
+          password: 'password03',
+        })
+        .expect('Content-Type', /json/)
+        .expect(200);
+      await request
+        .post('/auth/login')
+        .send({
+          identity: 'asurname@test.com',
+          password: 'password03',
+        })
+        .set('Accept', 'application/json')
+        .expect('Content-Type', /json/)
+        .expect(200);
+      done();
+    } catch (err) {
+      done(err);
+    }
   });
 });

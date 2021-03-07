@@ -39,7 +39,7 @@ const Token = orm.model(
       return _.mapKeys(attributes, (value, key) => _.snakeCase(key));
     },
     user() {
-      return this.belongsTo('User');
+      return this.belongsTo('User', 'user_id', 'user_id');
     },
   },
 );
