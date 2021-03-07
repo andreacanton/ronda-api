@@ -49,21 +49,21 @@ describe('User model', () => {
       logger.error(`User should create Exception ${e}`);
     }
   });
-  test('User should update', async () => {
-    expect.assertions(4);
-    try {
-      const user = await new User({ memberNumber: 1072 }).fetch();
-      user.set('role', 'admin');
-      user.save().then((updated) => {
-        expect(updated.attributes.createdAt).toBeDefined();
-        expect(updated.attributes.lastname).toBe('ASurname');
-        expect(updated.attributes.role).toBe('admin');
-        expect(updated.attributes.password).toBeUndefined();
-      });
-    } catch (e) {
-      logger.error(`User should update Exception ${e}`);
-    }
-  });
+  // test('User should update', async () => {
+  //   expect.assertions(4);
+  //   try {
+  //     const user = await new User({ memberNumber: 1072 }).fetch();
+  //     user.set('role', 'admin');
+  //     user.save().then((updated) => {
+  //       expect(updated.attributes.createdAt).toBeDefined();
+  //       expect(updated.attributes.lastname).toBe('ASurname');
+  //       expect(updated.attributes.role).toBe('admin');
+  //       expect(updated.attributes.password).toBeUndefined();
+  //     });
+  //   } catch (e) {
+  //     logger.error(`User should update Exception ${e}`);
+  //   }
+  // });
 
   test('User should not update status not available', async () => {
     expect.assertions(1);
