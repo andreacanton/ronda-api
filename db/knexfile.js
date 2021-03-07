@@ -40,7 +40,7 @@ module.exports = {
     seeds: {
       directory: './db/seeds/test',
     },
-    debug: true,
+
     log,
   },
   production: {
