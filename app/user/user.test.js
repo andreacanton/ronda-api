@@ -2,25 +2,29 @@ const orm = require('../../db/index');
 const logger = require('../../logger');
 const User = require('./user.model');
 
-beforeAll(async () => {
-  await orm.knex.seed.run();
-});
-beforeEach(async () => {
-});
-afterAll(() => {});
 describe('User model', () => {
+  beforeAll(async () => {
+    await orm.knex.migrate.latest();
+    return orm.knex.seed.run();
+  });
   test('User model should be defined', () => {
     expect(User).toBeDefined();
   });
   test('User fetchAll should work', async () => {
+    expect.assertions(1);
     const results = await User.fetchAll();
     expect(results.length).toBe(3);
   });
   test('User fetch by id', async () => {
-    const user = await new User({ userId: '2272e61b-59b5-4da3-9ab6-27c804930ca5' }).fetch();
-    expect(user.get('userId')).toEqual('2272e61b-59b5-4da3-9ab6-27c804930ca5');
-    expect(user.get('firstname')).toBe('B');
-    expect(user.get('role')).toBe('member');
+    expect.assertions(3);
+    try {
+      const user = await new User({ userId: '2272e61b-59b5-4da3-9ab6-27c804930ca5' }).fetch();
+      expect(user.get('userId')).toEqual('2272e61b-59b5-4da3-9ab6-27c804930ca5');
+      expect(user.get('firstname')).toBe('B');
+      expect(user.get('role')).toBe('member');
+    } catch (e) {
+      logger.error(`User should fetch by id Exception ${e}`);
+    }
   });
   test('User fetch id 8db9c992-f0f2-43ef-9264-4a20540e3bcf should fail', () =>
     expect(new User({ userId: '8db9c992-f0f2-43ef-9264-4a20540e3bcf' }).fetch()).rejects.toThrow('EmptyResponse'));
@@ -42,20 +46,22 @@ describe('User model', () => {
       expect(saved.get('role')).toBe('member');
       expect(saved.get('password')).toBeUndefined();
     } catch (e) {
-      logger.error(e);
+      logger.error(`User should create Exception ${e}`);
     }
   });
   test('User should update', async () => {
-    const user = new User({ memberNumber: 1072 }).fetch();
+    expect.assertions(4);
     try {
-      user.role = 'admin';
-      const updated = await user.save();
-      expect(updated.attributes.createdAt).toBeDefined();
-      expect(updated.attributes.lastname).toBe('ASurname');
-      expect(updated.attributes.role).toBe('admin');
-      expect(updated.attributes.password).toBeUndefined();
+      const user = await new User({ memberNumber: 1072 }).fetch();
+      user.set('role', 'admin');
+      user.save().then((updated) => {
+        expect(updated.attributes.createdAt).toBeDefined();
+        expect(updated.attributes.lastname).toBe('ASurname');
+        expect(updated.attributes.role).toBe('admin');
+        expect(updated.attributes.password).toBeUndefined();
+      });
     } catch (e) {
-      logger.error(e);
+      logger.error(`User should update Exception ${e}`);
     }
   });
 

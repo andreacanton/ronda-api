@@ -15,4 +15,6 @@ exports.up = (knex) =>
     t.timestamps(false, true);
   });
 
-exports.down = (knex) => knex.schema.dropTableIfExists('users');
+exports.down = (knex) => knex.schema
+  .dropTableIfExists('tokens')
+  .dropTableIfExists('users');

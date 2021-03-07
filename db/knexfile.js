@@ -3,7 +3,7 @@ const config = require('../config');
 
 const log = {
   warn: (msg) => logger.warn(msg),
-  error: (msg) => logger.error(msg),
+  error: (msg) => logger.error(`Knex Error: ${msg}`),
   deprecate: (msg) => logger.notice(msg),
   debug: (msg) => logger.debug(JSON.stringify(msg)),
 };
@@ -32,7 +32,7 @@ module.exports = {
     client: 'sqlite3',
     useNullAsDefault: true,
     connection: {
-      filename: './db/test.sqlite',
+      filename: ':memory:',
     },
     migrations: {
       directory: './db/migrations',
@@ -40,6 +40,8 @@ module.exports = {
     seeds: {
       directory: './db/seeds/test',
     },
+    debug: true,
+    log,
   },
   production: {
     client: dbConfig.client,

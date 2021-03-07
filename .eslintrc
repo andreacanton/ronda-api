@@ -5,10 +5,11 @@
     "arrow-parens": ["error", "always"],
     "implicit-arrow-linebreak": "off",
     "curly": "off",
-    "operator-linebreak": "off"
+    "operator-linebreak": "off",
+    "function-paren-newline": "off"
   },
   "env": {
     "jest": true
   },
-  "ignorePatterns": "node_modules|.vscode"
+  "ignorePatterns": "node_modules|.vscode",
 }
