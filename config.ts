@@ -1,10 +1,9 @@
-const convict = require('convict');
-const fs = require('fs');
-const convictFormatWithValidator = require('convict-format-with-validator');
+import convict from 'convict';
+import fs from 'fs';
+import convictFormatWithValidator from 'convict-format-with-validator';
 
 convict.addFormats(convictFormatWithValidator);
-
-const config = convict({
+export default convict({
   env: {
     doc: 'The application environment.',
     format: ['production', 'development', 'test'],
@@ -108,5 +107,3 @@ if (fs.existsSync(configFilePath)) {
 }
 
 config.validate({ allowed: 'strict' });
-
-module.exports = config;
