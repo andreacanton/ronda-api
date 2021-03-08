@@ -1,10 +1,9 @@
-const { createLogger, format, transports } = require('winston');
-const config = require('./config');
+import { createLogger, format, transports } from 'winston';
+import config from './config';
 
 const ENV = config.get('env');
 
 const stringFormat = format.printf(
-  // eslint-disable-next-line object-curly-newline
   ({ level, message, timestamp, ...metadata }) => {
     let msg = `${timestamp} [${level}] : ${message} `;
     if (metadata) {
@@ -35,5 +34,4 @@ if (ENV !== 'production') {
     }),
   );
 }
-
-module.exports = logger;
+export default logger;
