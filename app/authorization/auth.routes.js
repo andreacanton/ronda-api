@@ -4,11 +4,7 @@ const logger = require('../../logger');
 const User = require('../user/user.model');
 const config = require('../../config');
 const mailer = require('../../mailer');
-const {
-  createJwt,
-  refreshJwt,
-  getPublicKey,
-} = require('./auth.helper');
+const { createJwt, refreshJwt, getPublicKey } = require('./auth.helper');
 const { getAuthFromHeaders } = require('./auth.helper');
 const Token = require('./token.model');
 
@@ -33,7 +29,6 @@ routes.post('/login', async (req, res) => {
     }
     await user.authenticate(req.body.password);
     const tokenResponse = createJwt(user.get('userId'), {
-      type: 'access-token',
       role: user.get('role'),
       email: user.get('email'),
       firstname: user.get('firstname'),

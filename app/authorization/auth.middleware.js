@@ -3,9 +3,11 @@ const { verifyJwt, getAuthFromHeaders } = require('./auth.helper');
 const User = require('../user/user.model');
 
 module.exports.authorize = (role = null) => async (req, res, next) => {
-  if (req.method === 'OPTIONS' &&
+  if (
+    req.method === 'OPTIONS' &&
     // eslint-disable-next-line no-prototype-builtins
-    req.headers.hasOwnProperty('access-control-request-headers')) {
+    req.headers.hasOwnProperty('access-control-request-headers')
+  ) {
     return next();
   }
 
@@ -22,10 +24,6 @@ module.exports.authorize = (role = null) => async (req, res, next) => {
         userId: req.auth.payload.sub,
         status: 'enabled',
       }).fetch();
-    }
-
-    if (req.auth.payload.type !== 'access-token') {
-      throw Error("Required type 'access-token'");
     }
 
     if (role && req.auth.payload.role !== role) {
