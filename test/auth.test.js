@@ -11,12 +11,12 @@ beforeAll(async () => {
   return orm.knex.seed.run();
 });
 
-describe('POST /auth/login', () => {
+describe('Login Process', () => {
   it('responds 200 with json', (done) => {
     request
       .post('/auth/login')
       .send({
-        identity: 'asurname@test.com',
+        identity: 'admin@test.com',
         password: 'password01',
       })
       .set('Accept', 'application/json')
@@ -32,7 +32,7 @@ describe('POST /auth/login', () => {
     request
       .post('/auth/login')
       .send({
-        identity: 'asurname@test.com',
+        identity: 'admin@test.com',
         password: 'password02',
       })
       .set('Accept', 'application/json')
@@ -65,9 +65,13 @@ describe('POST /auth/login', () => {
 describe('Forgot Password process', () => {
   it('should reset password correctly', async (done) => {
     try {
-      const user = await new User({ email: 'asurname@test.com' }).fetch();
+      const user = await new User({ email: 'admin@test.com' }).fetch();
       const forgotResponse = await request
-        .post(`/auth/forgot-password?resetUrl=${encodeURI('http://localhost:3001/reset-password')}`)
+        .post(
+          `/auth/forgot-password?resetUrl=${encodeURI(
+            'http://localhost:3001/reset-password',
+          )}`,
+        )
         .send({
           identity: user.get('email'),
         })
@@ -75,7 +79,10 @@ describe('Forgot Password process', () => {
         .expect('Content-Type', /json/)
         .expect(200);
       expect(forgotResponse.body.message).toBeDefined();
-      const token = await new Token({ userId: user.get('userId'), type: 'reset-password' }).fetch();
+      const token = await new Token({
+        userId: user.get('userId'),
+        type: 'reset-password',
+      }).fetch();
       await request
         .post('/auth/reset-password')
         .set('Authorization', `Bearer ${token.get('tokenId')}`)
@@ -88,7 +95,7 @@ describe('Forgot Password process', () => {
       await request
         .post('/auth/login')
         .send({
-          identity: 'asurname@test.com',
+          identity: 'admin@test.com',
           password: 'password03',
         })
         .set('Accept', 'application/json')
