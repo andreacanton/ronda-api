@@ -44,8 +44,8 @@ iwIDAQAB
 `;
 
 if (ENV !== 'test') {
-  PRIVATE_KEY = fs.readFileSync(`${__dirname}private_key.pem`);
-  PUBLIC_KEY = fs.readFileSync(`${__dirname}public_key.pem`);
+  PRIVATE_KEY = fs.readFileSync(`${__dirname}/private_key.pem`);
+  PUBLIC_KEY = fs.readFileSync(`${__dirname}/public_key.pem`);
 }
 
 module.exports = { PRIVATE_KEY, PUBLIC_KEY };

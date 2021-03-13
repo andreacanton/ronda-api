@@ -72,7 +72,13 @@ routes.patch('/profile', authorize(), async (req, res, next) => {
     const saved = await user.save();
     res.json(saved.attributes);
   } catch (e) {
-    next(e);
+    if (/invalid value/.test(e.message)) {
+      res.status(400).json({
+        message: e.message,
+      });
+    } else {
+      next(e);
+    }
   }
 });
 
@@ -123,7 +129,13 @@ routes.post('/', authorize('admin'), async (req, res, next) => {
 
     res.json(user);
   } catch (e) {
-    next(e);
+    if (/invalid value/.test(e.message)) {
+      res.status(400).json({
+        error: e,
+      });
+    } else {
+      next(e);
+    }
   }
 });
 

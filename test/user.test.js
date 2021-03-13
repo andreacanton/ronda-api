@@ -66,3 +66,75 @@ describe('GET /', () => {
       .catch((err) => done(err));
   });
 });
+
+describe('POST /', () => {
+  it('Admin Token: should create', (done) => {
+    request
+      .post('/users/')
+      .send({
+        memberNumber: 1800,
+        role: 'member',
+        firstname: 'Admin',
+        lastname: 'Creation',
+        password: 'password0231',
+        email: 'create@test.com',
+        status: 'enabled',
+      })
+      .set('Accept', 'application/json')
+      .set('Authorization', `Bearer ${adminToken}`)
+      .expect('Content-Type', /json/)
+      .expect(200)
+      .then((response) => {
+        expect(response.body.userId).toBeDefined();
+        expect(response.body.passwordDigest).toBeDefined();
+        expect(response.body.password).toBeUndefined();
+        expect(response.body.lastname).toBe('Creation');
+        done();
+      })
+      .catch((err) => done(err));
+  });
+  it('should get 401 with member token', (done) => {
+    request
+      .post('/users/')
+      .send({
+        memberNumber: 1800,
+        role: 'member',
+        firstname: 'Failing',
+        lastname: 'creation',
+        password: 'password0231',
+        email: 'createfail@test.com',
+        status: 'enabled',
+      })
+      .set('Accept', 'application/json')
+      .set('Authorization', `Bearer ${memberToken}`)
+      .expect('Content-Type', /json/)
+      .expect(401)
+      .then((response) => {
+        expect(response.body.message).toBeDefined();
+        done();
+      })
+      .catch((err) => done(err));
+  });
+  it('should get 400 with wrong data', (done) => {
+    request
+      .post('/users/')
+      .send({
+        memberNumber: 1800,
+        role: 'failing',
+        firstname: 'Failing',
+        lastname: 'creation',
+        password: 'password0231',
+        email: 'create@test.com',
+        status: 'invisible',
+      })
+      .set('Accept', 'application/json')
+      .set('Authorization', `Bearer ${adminToken}`)
+      .expect('Content-Type', /json/)
+      .expect(400)
+      .then((response) => {
+        expect(response.body.error).toBeDefined();
+        done();
+      })
+      .catch((err) => done(err));
+  });
+});
