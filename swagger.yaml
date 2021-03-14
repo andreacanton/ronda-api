@@ -13,7 +13,7 @@ tags:
     description: 'Authentications endpoints'
   - name: 'user'
     description: 'Manage users and personal profile'
-  - name: 'recipients'
+  - name: 'recipient'
     description: "Manage Ronda's recipients"
 servers:
   - url: https://api.rondadellacaritaverona.org
@@ -104,7 +104,7 @@ paths:
       tags:
         - 'auth'
       summary: 'reset the password'
-      description: 'It will send an email to the user with a link'
+      description: 'It will send an email to the user with a link to reset the password'
       consumes:
         - 'application/json'
       produces:
@@ -133,9 +133,9 @@ paths:
         - Bearer: []
   /users:
     get:
-      tags: 'user'
-      summary: 'get list of users'
-      description: 'It will send an email to the user with a link'
+      tags:
+        - 'user'
+      summary: 'Get list of users'
       consumes:
         - 'application/json'
       produces:
@@ -144,10 +144,472 @@ paths:
         - in: 'query'
           name: 'q'
           type: 'string'
+          description: 'Search parameter on email, memberNumber, firstname and lastname'
+        - in: 'query'
+          name: 'p'
+          schema:
+            type: 'integer'
+          description: 'Page number. Default 1'
+        - in: 'query'
+          name: 'psize'
+          schema:
+            type: 'integer'
+          description: 'Page size. Default 20'
+        - in: 'query'
+          name: 'status'
+          schema:
+            type: 'string'
+            enum:
+              - 'enabled'
+              - 'disabled'
+          description: 'Filter per Status'
+        - in: 'query'
+          name: 'sort'
+          description: 'Field name to sort with'
+          schema:
+            type: 'string'
+        - in: 'query'
+          name: 'dir'
+          description: 'Sort direction. Default `asc`'
+          schema:
+            type: 'string'
+            enum:
+            - 'asc'
+            - 'desc'
+      responses:
+        '200':
+          description: 'successful operation'
+          schema:
+            type: 'array'
+            items:
+              $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/Unauthorized' 
       security:
         - Bearer: []
+    post:
+      tags:
+        - 'user'
+      summary: 'Register user'
+      consumes:
+        - 'application/json'
+      produces:
+        - 'application/json'
+      parameters:
+        - in: 'body'
+          schema:
+            $ref: '#/components/schemas/User'
+      security:
+        - Bearer: []
+      responses:
+        '200':
+          description: 'successful operation'
+          schema:
+            $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/Unauthorized' 
+  /users/{uuid}:
+    parameters:
+    - in: path
+      name: uuid
+      type: string
+    get:
+      tags:
+        - 'user'
+      summary: 'Get user'
+      consumes:
+        - 'application/json'
+      produces:
+        - 'application/json'
+      security:
+        - Bearer: []
+      responses:
+        '200':
+          description: 'successful operation'
+          schema:
+            $ref: '#/components/schemas/User'
+        '404':
+          $ref: '#/components/responses/NotFound' 
+        '401':
+          $ref: '#/components/responses/Unauthorized' 
+    patch:
+      tags:
+        - 'user'
+      summary: 'Edit user'
+      consumes:
+        - 'application/json'
+      produces:
+        - 'application/json'
+      parameters:
+        - in: 'body'
+          schema:
+            $ref: '#/components/schemas/User'
+      security:
+        - Bearer: []
+      responses:
+        '200':
+          description: 'successful operation'
+          schema:
+            $ref: '#/components/schemas/User'
+        '404':
+          $ref: '#/components/responses/NotFound' 
+        '401':
+          $ref: '#/components/responses/Unauthorized' 
+    delete:
+      tags:
+        - 'user'
+      summary: 'Deactivate user'
+      consumes:
+        - 'application/json'
+      produces:
+        - 'application/json'
+      security:
+        - Bearer: []
+      responses:
+        '200':
+          description: 'successful operation'
+          schema:
+            type: object
+            properties:
+              message: 
+                type: string
+        '404':
+          $ref: '#/components/responses/NotFound' 
+        '401':
+          $ref: '#/components/responses/Unauthorized' 
+  /users/is-taken/{fieldName}/{fieldValue}:
+    get:
+      tags:
+        - 'user'
+      parameters:
+      - name: fieldName
+        in: path
+        schema:
+          type: string
+          enum:
+          - email
+          - memberNumber
+      - name: fieldValue
+        in: path
+        schema:
+          type: string
+      - name: userId
+        in: query
+        schema:
+          type: string
+      produces:
+        - 'application/json'
+      security:
+        - Bearer: []
+      responses:
+        '200':
+          schema:
+            type: object
+            properties:
+              isTaken: 
+                type: boolean
+  /users/profile:
+    get:
+      tags:
+        - user
+      summary: 'Get personal user'
+      produces:
+        - 'application/json'
+      security:
+        - Bearer: []
+      responses:
+        '200':
+          description: 'successful operation'
+          schema:
+            $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    patch:
+      tags:
+        - user
+      summary: 'Edit personal user'
+      consumes:
+        - 'application/json'
+      produces:
+        - 'application/json'
+      parameters:
+        - in: 'body'
+          schema:
+            $ref: '#/components/schemas/User'
+      security:
+        - Bearer: []
+      responses:
+        '200':
+          description: 'successful operation'
+          schema:
+            $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/Unauthorized' 
+  /recipients:
+    get:
+      tags:
+        - 'recipient'
+      summary: 'Get list of recipients'
+      consumes:
+        - 'application/json'
+      produces:
+        - 'application/json'
+      parameters:
+        - in: 'query'
+          name: 'q'
+          type: 'string'
+          description: 'Search parameter on email, memberNumber, firstname and lastname'
+        - in: 'query'
+          name: 'p'
+          schema:
+            type: 'integer'
+          description: 'Page number. Default 1'
+        - in: 'query'
+          name: 'psize'
+          schema:
+            type: 'integer'
+          description: 'Page size. Default 20'
+        - in: 'query'
+          name: 'status'
+          schema:
+            type: 'string'
+            enum:
+              - 'enabled'
+              - 'disabled'
+          description: 'Filter per Status'
+        - in: 'query'
+          name: 'sort'
+          description: 'Field name to sort with'
+          schema:
+            type: 'string'
+        - in: 'query'
+          name: 'dir'
+          description: 'Sort direction. Default `asc`'
+          schema:
+            type: 'string'
+            enum:
+            - 'asc'
+            - 'desc'
+      responses:
+        '200':
+          description: 'successful operation'
+          schema:
+            type: 'array'
+            items:
+              $ref: '#/components/schemas/Recipient'
+            properties:
+              message:
+                type: 'string'
+        '401':
+          $ref: '#/components/responses/Unauthorized' 
+      security:
+        - Bearer: []
+    post:
+      tags:
+        - 'recipient'
+      summary: 'Register recipient'
+      consumes:
+        - 'application/json'
+      produces:
+        - 'application/json'
+      parameters:
+        - in: 'body'
+          schema:
+            $ref: '#/components/schemas/Recipient'
+      security:
+        - Bearer: []
+      responses:
+        '200':
+          description: 'successful operation'
+          schema:
+            type: 'array'
+            items:
+              $ref: '#/components/schemas/Recipient'
+            properties:
+              message:
+                type: 'string'
+        '401':
+          $ref: '#/components/responses/Unauthorized' 
+  /recipients/{id}:
+    parameters:
+    - in: path
+      name: id
+      type: integer
+    get:
+      tags:
+        - 'recipient'
+      summary: 'Get recipient'
+      consumes:
+        - 'application/json'
+      produces:
+        - 'application/json'
+      security:
+        - Bearer: []
+      responses:
+        '200':
+          description: 'successful operation'
+          schema:
+            type: 'array'
+            items:
+              $ref: '#/components/schemas/Recipient'
+            properties:
+              message:
+                type: 'string'
+        '404':
+          $ref: '#/components/responses/NotFound' 
+        '401':
+          $ref: '#/components/responses/Unauthorized' 
+    patch:
+      tags:
+        - 'recipient'
+      summary: 'Edit recipient'
+      consumes:
+        - 'application/json'
+      produces:
+        - 'application/json'
+      parameters:
+        - in: 'body'
+          schema:
+            $ref: '#/components/schemas/Recipient'
+      security:
+        - Bearer: []
+      responses:
+        '200':
+          description: 'successful operation'
+          schema:
+            type: 'array'
+            items:
+              $ref: '#/components/schemas/Recipient'
+            properties:
+              message:
+                type: 'string'
+        '404':
+          $ref: '#/components/responses/NotFound' 
+        '401':
+          $ref: '#/components/responses/Unauthorized' 
+    delete:
+      tags:
+        - 'recipient'
+      summary: 'Deactivate recipient'
+      consumes:
+        - 'application/json'
+      produces:
+        - 'application/json'
+      security:
+        - Bearer: []
+      responses:
+        '200':
+          description: 'successful operation'
+          schema:
+            type: object
+            properties:
+              message: 
+                type: string
+        '404':
+          $ref: '#/components/responses/NotFound' 
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /recipients/is-card-number-taken/{fieldValue}:
+    get:
+      tags:
+        - 'recipient'
+      parameters:
+      - name: fieldValue
+        in: path
+        schema:
+          type: string
+      - name: recipientId
+        in: query
+        schema:
+          type: string
+      produces:
+        - 'application/json'
+      security:
+        - Bearer: []
+      responses:
+        '200':
+          schema:
+            type: object
+            properties:
+              isTaken: 
+                type: boolean
 securityDefinitions:
   Bearer:
     type: apiKey
     name: Authorization
     in: header
+components:
+  responses:
+    NotFound:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  schemas:
+    User:
+      type: 'object'
+      properties:
+        userId:
+          type: string
+        memberNumber:
+          type: integer
+        firstname:
+          type: string
+        lastname:
+          type: string
+        email:
+          type: string
+        passwordDigest:
+          type: string
+        role:
+          type: string
+        status:
+          type: string
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+    Recipient:
+      type: 'object'
+      properties:
+        recipientId:
+          type: integer
+        cardNumber:
+          type: string
+        firstname:
+          type: string
+        lastname:
+          type: string
+        email:
+          type: string
+        phoneNumber:
+          type: string
+        gender:
+          type: string
+        topSize:
+          type: string
+        bottomSize:
+          type: string
+        shoeSize:
+          type: string
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      required:
+        - code
+        - message
