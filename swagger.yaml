@@ -182,7 +182,7 @@ paths:
           schema:
             type: 'array'
             items:
-              $ref: '#/components/schemas/User'
+              $ref: '#/components/schemas/UserRequest'
         '401':
           $ref: '#/components/responses/Unauthorized' 
       security:
@@ -198,7 +198,7 @@ paths:
       parameters:
         - in: 'body'
           schema:
-            $ref: '#/components/schemas/User'
+            $ref: '#/components/schemas/UserRequest'
       security:
         - Bearer: []
       responses:
@@ -243,7 +243,7 @@ paths:
       parameters:
         - in: 'body'
           schema:
-            $ref: '#/components/schemas/User'
+            $ref: '#/components/schemas/UserRequest'
       security:
         - Bearer: []
       responses:
@@ -333,9 +333,18 @@ paths:
       produces:
         - 'application/json'
       parameters:
-        - in: 'body'
+        - in: body
           schema:
-            $ref: '#/components/schemas/User'
+            type: object
+            properties:
+              firstname:
+                type: string
+              lastname:
+                type: string
+              password:
+                type: string
+              email:
+                type: string
       security:
         - Bearer: []
       responses:
@@ -415,7 +424,7 @@ paths:
       parameters:
         - in: 'body'
           schema:
-            $ref: '#/components/schemas/Recipient'
+            $ref: '#/components/schemas/RecipientRequest'
       security:
         - Bearer: []
       responses:
@@ -470,7 +479,7 @@ paths:
       parameters:
         - in: 'body'
           schema:
-            $ref: '#/components/schemas/Recipient'
+            $ref: '#/components/schemas/RecipientRequest'
       security:
         - Bearer: []
       responses:
@@ -553,6 +562,21 @@ components:
           schema:
             $ref: '#/components/schemas/Error'
   schemas:
+    UserRequest:
+      type: object
+      properties:
+        firstname:
+          type: string
+        lastname:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        role:
+          type: string
+        status:
+          type: string
     User:
       type: 'object'
       properties:
@@ -575,6 +599,27 @@ components:
         createdAt:
           type: string
         updatedAt:
+          type: string
+    RecipientRequest:
+      type: 'object'
+      properties:
+        cardNumber:
+          type: string
+        firstname:
+          type: string
+        lastname:
+          type: string
+        email:
+          type: string
+        phoneNumber:
+          type: string
+        gender:
+          type: string
+        topSize:
+          type: string
+        bottomSize:
+          type: string
+        shoeSize:
           type: string
     Recipient:
       type: 'object'

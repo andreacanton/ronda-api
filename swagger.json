@@ -285,7 +285,7 @@
             "schema": {
               "type": "array",
               "items": {
-                "$ref": "#/components/schemas/User"
+                "$ref": "#/components/schemas/UserRequest"
               }
             }
           },
@@ -314,7 +314,7 @@
           {
             "in": "body",
             "schema": {
-              "$ref": "#/components/schemas/User"
+              "$ref": "#/components/schemas/UserRequest"
             }
           }
         ],
@@ -390,7 +390,7 @@
           {
             "in": "body",
             "schema": {
-              "$ref": "#/components/schemas/User"
+              "$ref": "#/components/schemas/UserRequest"
             }
           }
         ],
@@ -546,7 +546,21 @@
           {
             "in": "body",
             "schema": {
-              "$ref": "#/components/schemas/User"
+              "type": "object",
+              "properties": {
+                "firstname": {
+                  "type": "string"
+                },
+                "lastname": {
+                  "type": "string"
+                },
+                "password": {
+                  "type": "string"
+                },
+                "email": {
+                  "type": "string"
+                }
+              }
             }
           }
         ],
@@ -676,7 +690,7 @@
           {
             "in": "body",
             "schema": {
-              "$ref": "#/components/schemas/Recipient"
+              "$ref": "#/components/schemas/RecipientRequest"
             }
           }
         ],
@@ -768,7 +782,7 @@
           {
             "in": "body",
             "schema": {
-              "$ref": "#/components/schemas/Recipient"
+              "$ref": "#/components/schemas/RecipientRequest"
             }
           }
         ],
@@ -912,6 +926,29 @@
       }
     },
     "schemas": {
+      "UserRequest": {
+        "type": "object",
+        "properties": {
+          "firstname": {
+            "type": "string"
+          },
+          "lastname": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          }
+        }
+      },
       "User": {
         "type": "object",
         "properties": {
@@ -943,6 +980,38 @@
             "type": "string"
           },
           "updatedAt": {
+            "type": "string"
+          }
+        }
+      },
+      "RecipientRequest": {
+        "type": "object",
+        "properties": {
+          "cardNumber": {
+            "type": "string"
+          },
+          "firstname": {
+            "type": "string"
+          },
+          "lastname": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "phoneNumber": {
+            "type": "string"
+          },
+          "gender": {
+            "type": "string"
+          },
+          "topSize": {
+            "type": "string"
+          },
+          "bottomSize": {
+            "type": "string"
+          },
+          "shoeSize": {
             "type": "string"
           }
         }
