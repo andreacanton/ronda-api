@@ -47,12 +47,12 @@ const Recipient = orm.model(
     },
   },
   {
-    async isFieldTaken(fieldName, fieldValue, userId = null) {
+    async isFieldTaken(fieldName, fieldValue, recipientId = null) {
       let query = orm.knex
         .from('recipients')
         .where(_.snakeCase(fieldName), '=', fieldValue);
-      if (userId) {
-        query = query.where('recipient_id', '!=', userId);
+      if (recipientId) {
+        query = query.where('recipient_id', '!=', recipientId);
       }
       const resp = await query;
       return resp.length > 0;
@@ -79,7 +79,7 @@ const Recipient = orm.model(
       if (sort) {
         query = query.orderBy(_.snakeCase(sort), direction);
       }
-      return query.limit(pageSize).offset((pageSize * (page - 1)));
+      return query.limit(pageSize).offset(pageSize * (page - 1));
     },
   },
 );

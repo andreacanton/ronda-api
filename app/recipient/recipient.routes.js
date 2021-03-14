@@ -38,7 +38,7 @@ routes.get(
     const isTaken = await Recipient.isFieldTaken(
       'cardNumber',
       req.params.fieldValue,
-      req.query.userId,
+      req.query.recipientId,
     );
     res.json({
       isTaken,
