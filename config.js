@@ -23,6 +23,12 @@ const config = convict({
     default: '1h',
     env: 'TOKEN_EXPIRATION',
   },
+  host: {
+    doc: 'The server host name',
+    format: String,
+    default: 'localhost:3000',
+    env: 'HOST',
+  },
   port: {
     doc: 'The port to bind.',
     format: 'port',

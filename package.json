@@ -5,9 +5,10 @@
   "main": "server.js",
   "scripts": {
     "start": "npm run nodemon",
-    "dev": "cross-env NODE_ENV=development node server.js",
     "nodemon": "nodemon --exec npm run dev",
+    "dev": "cross-env NODE_ENV=development node server.js",
     "debug": "npm run start",
+    "swagger": "js-yaml swagger.yaml > swagger.json",
     "lint": "eslint .",
     "prepush": "npm test",
     "pretest": "npm run lint",
@@ -46,6 +47,7 @@
     "mock-knex": "^0.4.9",
     "mysql2": "^2.2.5",
     "nodemailer": "^6.4.17",
+    "swagger-ui-express": "^4.1.6",
     "uuid": "^8.3.2",
     "winston": "^3.3.3"
   },
@@ -56,6 +58,7 @@
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.22.1",
     "jest": "^26.6.3",
+    "js-yaml": "^3.14.0",
     "nodemon": "^2.0.6",
     "shx": "^0.3.3",
     "sqlite3": "^5.0.0",

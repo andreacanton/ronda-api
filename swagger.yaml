@@ -1,0 +1,153 @@
+swagger: '2.0'
+info:
+  description: 'This is a sample server Petstore server.  You can find out more about     Swagger at [http://swagger.io](http://swagger.io) or on [irc.freenode.net, #swagger](http://swagger.io/irc/).      For this sample, you can use the api key `special-key` to test the authorization     filters.'
+  version: '1.0.0'
+  title: 'Ronda API'
+  contact:
+    email: 'hello@andreacanton.dev'
+  license:
+    name: 'Apache 2.0'
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+tags:
+  - name: 'auth'
+    description: 'Authentications endpoints'
+  - name: 'user'
+    description: 'Manage users and personal profile'
+  - name: 'recipients'
+    description: "Manage Ronda's recipients"
+servers:
+  - url: https://api.rondadellacaritaverona.org
+    description: Production
+  - url: http://localhost:3000
+    description: Development
+paths:
+  /auth/login:
+    post:
+      tags:
+        - 'auth'
+      summary: 'Retrive access_token'
+      description: ''
+      consumes:
+        - 'application/json'
+      produces:
+        - 'application/json'
+      parameters:
+        - in: 'body'
+          name: 'body'
+          description: 'order placed for purchasing the pet'
+          required: true
+          schema:
+            type: 'object'
+            properties:
+              identity:
+                type: 'string'
+              password:
+                type: 'string'
+      responses:
+        '200':
+          description: 'successful operation'
+          schema:
+            type: 'object'
+            properties:
+              access_token:
+                type: 'string'
+        '401':
+          description: 'Invalid credentials'
+  /auth/public-key:
+    get:
+      tags:
+        - 'auth'
+      summary: 'Retrive JWT Public Key'
+      description: ''
+      produces:
+        - 'plain/text'
+      responses:
+        '200':
+          description: 'successful operation'
+          schema:
+            type: 'string'
+  /auth/forgot-password:
+    post:
+      tags:
+        - 'auth'
+      summary: 'initialize process to retrive the password'
+      description: 'It will send an email to the user with a link'
+      consumes:
+        - 'application/json'
+      produces:
+        - 'application/json'
+      parameters:
+        - in: 'query'
+          name: 'resetUrl'
+          type: 'string'
+        - in: 'body'
+          name: 'body'
+          description: 'order placed for purchasing the pet'
+          required: true
+          schema:
+            type: 'object'
+            properties:
+              identity:
+                type: 'string'
+      responses:
+        '200':
+          description: 'successful operation'
+          schema:
+            type: 'object'
+            properties:
+              message:
+                type: 'string'
+        '400':
+          description: 'Bad request'
+  /auth/reset-password:
+    post:
+      tags:
+        - 'auth'
+      summary: 'reset the password'
+      description: 'It will send an email to the user with a link'
+      consumes:
+        - 'application/json'
+      produces:
+        - 'application/json'
+      parameters:
+        - in: 'body'
+          name: 'body'
+          description: 'order placed for purchasing the pet'
+          required: true
+          schema:
+            type: 'object'
+            properties:
+              identity:
+                type: 'string'
+      responses:
+        '200':
+          description: 'successful operation'
+          schema:
+            type: 'object'
+            properties:
+              message:
+                type: 'string'
+        '400':
+          description: 'Bad request'
+      security:
+        - Bearer: []
+  /users:
+    get:
+      tags: 'user'
+      summary: 'get list of users'
+      description: 'It will send an email to the user with a link'
+      consumes:
+        - 'application/json'
+      produces:
+        - 'application/json'
+      parameters:
+        - in: 'query'
+          name: 'q'
+          type: 'string'
+      security:
+        - Bearer: []
+securityDefinitions:
+  Bearer:
+    type: apiKey
+    name: Authorization
+    in: header
