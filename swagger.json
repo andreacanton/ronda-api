@@ -53,7 +53,6 @@
           {
             "in": "body",
             "name": "body",
-            "description": "order placed for purchasing the pet",
             "required": true,
             "schema": {
               "type": "object",
@@ -128,7 +127,6 @@
           {
             "in": "body",
             "name": "body",
-            "description": "order placed for purchasing the pet",
             "required": true,
             "schema": {
               "type": "object",
@@ -312,12 +310,14 @@
         "parameters": [
           {
             "name": "resetUrl",
-            "in": "query"
+            "in": "query",
+            "required": true
           },
           {
+            "name": "user",
             "in": "body",
             "schema": {
-              "$ref": "#/components/schemas/UserRequest"
+              "$ref": "#/components/requestBody/User"
             }
           }
         ],
@@ -391,9 +391,10 @@
         ],
         "parameters": [
           {
+            "name": "user",
             "in": "body",
             "schema": {
-              "$ref": "#/components/schemas/UserRequest"
+              "$ref": "#/components/requestBody/User"
             }
           }
         ],
@@ -691,9 +692,10 @@
         ],
         "parameters": [
           {
+            "name": "recipient",
             "in": "body",
             "schema": {
-              "$ref": "#/components/schemas/RecipientRequest"
+              "$ref": "#/components/requestBody/Recipient"
             }
           }
         ],
@@ -783,9 +785,10 @@
         ],
         "parameters": [
           {
+            "name": "recipient",
             "in": "body",
             "schema": {
-              "$ref": "#/components/schemas/RecipientRequest"
+              "$ref": "#/components/requestBody/Recipient"
             }
           }
         ],
@@ -928,8 +931,8 @@
         }
       }
     },
-    "schemas": {
-      "UserRequest": {
+    "requestBody": {
+      "User": {
         "type": "object",
         "properties": {
           "firstname": {
@@ -952,6 +955,40 @@
           }
         }
       },
+      "Recipient": {
+        "type": "object",
+        "properties": {
+          "cardNumber": {
+            "type": "string"
+          },
+          "firstname": {
+            "type": "string"
+          },
+          "lastname": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "phoneNumber": {
+            "type": "string"
+          },
+          "gender": {
+            "type": "string"
+          },
+          "topSize": {
+            "type": "string"
+          },
+          "bottomSize": {
+            "type": "string"
+          },
+          "shoeSize": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "schemas": {
       "User": {
         "type": "object",
         "properties": {
@@ -983,38 +1020,6 @@
             "type": "string"
           },
           "updatedAt": {
-            "type": "string"
-          }
-        }
-      },
-      "RecipientRequest": {
-        "type": "object",
-        "properties": {
-          "cardNumber": {
-            "type": "string"
-          },
-          "firstname": {
-            "type": "string"
-          },
-          "lastname": {
-            "type": "string"
-          },
-          "email": {
-            "type": "string"
-          },
-          "phoneNumber": {
-            "type": "string"
-          },
-          "gender": {
-            "type": "string"
-          },
-          "topSize": {
-            "type": "string"
-          },
-          "bottomSize": {
-            "type": "string"
-          },
-          "shoeSize": {
             "type": "string"
           }
         }
