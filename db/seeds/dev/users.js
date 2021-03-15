@@ -2,10 +2,10 @@ const bcrypt = require('bcrypt');
 
 exports.seed = async (knex) =>
   knex('tokens')
-    .truncate()
+    .del()
     .then(() =>
       knex('users')
-        .truncate()
+        .del()
         .then(() => {
           const salt = bcrypt.genSaltSync(12);
           return knex('users').insert([
