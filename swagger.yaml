@@ -195,6 +195,8 @@ paths:
       produces:
         - 'application/json'
       parameters:
+        - name: 'resetUrl'
+          in: query
         - in: 'body'
           schema:
             $ref: '#/components/schemas/UserRequest'
