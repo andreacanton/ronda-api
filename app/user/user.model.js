@@ -17,12 +17,9 @@ const User = orm.model(
       role: 'member',
     },
     initialize() {
-      this.on(
-        'creating',
-        () => {
-          this.set('userId', uuidV4());
-        },
-      );
+      this.on('creating', () => {
+        this.set('userId', uuidV4());
+      });
       this.on('saving', this.validateSave);
     },
     validateSave() {
@@ -83,6 +80,7 @@ const User = orm.model(
       search,
       page = 1,
       pageSize = 20,
+      role,
       status,
       sort,
       direction = 'ASC',
@@ -98,10 +96,13 @@ const User = orm.model(
       if (status) {
         query = query.where('status', '=', status);
       }
+      if (role) {
+        query = query.where('role', '=', role);
+      }
       if (sort) {
         query = query.orderBy(_.snakeCase(sort), direction);
       }
-      return query.limit(pageSize).offset((pageSize * (page - 1)));
+      return query.limit(pageSize).offset(pageSize * (page - 1));
     },
   },
 );

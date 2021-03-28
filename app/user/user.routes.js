@@ -27,6 +27,7 @@ routes.get('/', authorize('admin'), async (req, res) => {
     page: req.query.p || 1,
     pageSize: req.query.psize || 20,
     status: req.query.status,
+    role: req.query.role,
     sort: req.query.sort,
     direction: req.query.dir,
   });
