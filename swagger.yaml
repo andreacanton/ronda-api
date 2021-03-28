@@ -49,6 +49,8 @@ paths:
             properties:
               access_token:
                 type: 'string'
+              refresh_token:
+                type: 'string'
         '401':
           description: 'Invalid credentials'
   /auth/public-key:
@@ -128,6 +130,29 @@ paths:
           description: 'Bad request'
       security:
         - Bearer: []
+  /auth/refresh:
+    get:
+      tags:
+        - 'auth'
+      summary: 'refresh token'
+      consumes:
+        - 'application/json'
+      produces:
+        - 'application/json'
+      responses:
+        '200':
+          description: 'successful operation'
+          schema:
+            type: 'object'
+            properties:
+              access_token:
+                type: 'string'
+              refresh_token:
+                type: 'string'
+        '401':
+          description: 'Invalid refresh token'
+      security:
+        - Bearer: []
   /users:
     get:
       tags:
@@ -159,7 +184,15 @@ paths:
             enum:
               - 'enabled'
               - 'disabled'
-          description: 'Filter per Status'
+          description: 'Filter per user Status'
+        - in: 'query'
+          name: 'role'
+          schema:
+            type: 'string'
+            enum:
+              - 'admin'
+              - 'member'
+          description: 'Filter per user Role'
         - in: 'query'
           name: 'sort'
           description: 'Field name to sort with'
@@ -171,8 +204,8 @@ paths:
           schema:
             type: 'string'
             enum:
-            - 'asc'
-            - 'desc'
+              - 'asc'
+              - 'desc'
       responses:
         '200':
           description: 'successful operation'
@@ -181,7 +214,7 @@ paths:
             items:
               $ref: '#/components/schemas/UserRequest'
         '401':
-          $ref: '#/components/responses/Unauthorized' 
+          $ref: '#/components/responses/Unauthorized'
       security:
         - Bearer: []
     post:
@@ -208,12 +241,12 @@ paths:
           schema:
             $ref: '#/components/schemas/User'
         '401':
-          $ref: '#/components/responses/Unauthorized' 
+          $ref: '#/components/responses/Unauthorized'
   /users/{uuid}:
     parameters:
-    - in: path
-      name: uuid
-      type: string
+      - in: path
+        name: uuid
+        type: string
     get:
       tags:
         - 'user'
@@ -230,9 +263,9 @@ paths:
           schema:
             $ref: '#/components/schemas/User'
         '404':
-          $ref: '#/components/responses/NotFound' 
+          $ref: '#/components/responses/NotFound'
         '401':
-          $ref: '#/components/responses/Unauthorized' 
+          $ref: '#/components/responses/Unauthorized'
     patch:
       tags:
         - 'user'
@@ -254,9 +287,9 @@ paths:
           schema:
             $ref: '#/components/schemas/User'
         '404':
-          $ref: '#/components/responses/NotFound' 
+          $ref: '#/components/responses/NotFound'
         '401':
-          $ref: '#/components/responses/Unauthorized' 
+          $ref: '#/components/responses/Unauthorized'
     delete:
       tags:
         - 'user'
@@ -273,32 +306,32 @@ paths:
           schema:
             type: object
             properties:
-              message: 
+              message:
                 type: string
         '404':
-          $ref: '#/components/responses/NotFound' 
+          $ref: '#/components/responses/NotFound'
         '401':
-          $ref: '#/components/responses/Unauthorized' 
+          $ref: '#/components/responses/Unauthorized'
   /users/is-taken/{fieldName}/{fieldValue}:
     get:
       tags:
         - 'user'
       parameters:
-      - name: fieldName
-        in: path
-        schema:
-          type: string
-          enum:
-          - email
-          - memberNumber
-      - name: fieldValue
-        in: path
-        schema:
-          type: string
-      - name: userId
-        in: query
-        schema:
-          type: string
+        - name: fieldName
+          in: path
+          schema:
+            type: string
+            enum:
+              - email
+              - memberNumber
+        - name: fieldValue
+          in: path
+          schema:
+            type: string
+        - name: userId
+          in: query
+          schema:
+            type: string
       produces:
         - 'application/json'
       security:
@@ -308,7 +341,7 @@ paths:
           schema:
             type: object
             properties:
-              isTaken: 
+              isTaken:
                 type: boolean
   /users/profile:
     get:
@@ -355,7 +388,7 @@ paths:
           schema:
             $ref: '#/components/schemas/User'
         '401':
-          $ref: '#/components/responses/Unauthorized' 
+          $ref: '#/components/responses/Unauthorized'
   /recipients:
     get:
       tags:
@@ -399,8 +432,8 @@ paths:
           schema:
             type: 'string'
             enum:
-            - 'asc'
-            - 'desc'
+              - 'asc'
+              - 'desc'
       responses:
         '200':
           description: 'successful operation'
@@ -412,7 +445,7 @@ paths:
               message:
                 type: 'string'
         '401':
-          $ref: '#/components/responses/Unauthorized' 
+          $ref: '#/components/responses/Unauthorized'
       security:
         - Bearer: []
     post:
@@ -441,12 +474,12 @@ paths:
               message:
                 type: 'string'
         '401':
-          $ref: '#/components/responses/Unauthorized' 
+          $ref: '#/components/responses/Unauthorized'
   /recipients/{id}:
     parameters:
-    - in: path
-      name: id
-      type: integer
+      - in: path
+        name: id
+        type: integer
     get:
       tags:
         - 'recipient'
@@ -468,9 +501,9 @@ paths:
               message:
                 type: 'string'
         '404':
-          $ref: '#/components/responses/NotFound' 
+          $ref: '#/components/responses/NotFound'
         '401':
-          $ref: '#/components/responses/Unauthorized' 
+          $ref: '#/components/responses/Unauthorized'
     patch:
       tags:
         - 'recipient'
@@ -497,9 +530,9 @@ paths:
               message:
                 type: 'string'
         '404':
-          $ref: '#/components/responses/NotFound' 
+          $ref: '#/components/responses/NotFound'
         '401':
-          $ref: '#/components/responses/Unauthorized' 
+          $ref: '#/components/responses/Unauthorized'
     delete:
       tags:
         - 'recipient'
@@ -516,10 +549,10 @@ paths:
           schema:
             type: object
             properties:
-              message: 
+              message:
                 type: string
         '404':
-          $ref: '#/components/responses/NotFound' 
+          $ref: '#/components/responses/NotFound'
         '401':
           $ref: '#/components/responses/Unauthorized'
   /recipients/is-card-number-taken/{fieldValue}:
@@ -527,14 +560,14 @@ paths:
       tags:
         - 'recipient'
       parameters:
-      - name: fieldValue
-        in: path
-        schema:
-          type: string
-      - name: recipientId
-        in: query
-        schema:
-          type: string
+        - name: fieldValue
+          in: path
+          schema:
+            type: string
+        - name: recipientId
+          in: query
+          schema:
+            type: string
       produces:
         - 'application/json'
       security:
@@ -544,7 +577,7 @@ paths:
           schema:
             type: object
             properties:
-              isTaken: 
+              isTaken:
                 type: boolean
 securityDefinitions:
   Bearer:

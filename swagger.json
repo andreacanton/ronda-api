@@ -75,6 +75,9 @@
               "properties": {
                 "access_token": {
                   "type": "string"
+                },
+                "refresh_token": {
+                  "type": "string"
                 }
               }
             }
@@ -208,6 +211,44 @@
         ]
       }
     },
+    "/auth/refresh": {
+      "get": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "refresh token",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "access_token": {
+                  "type": "string"
+                },
+                "refresh_token": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid refresh token"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
     "/users": {
       "get": {
         "tags": [
@@ -253,7 +294,19 @@
                 "disabled"
               ]
             },
-            "description": "Filter per Status"
+            "description": "Filter per user Status"
+          },
+          {
+            "in": "query",
+            "name": "role",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "admin",
+                "member"
+              ]
+            },
+            "description": "Filter per user Role"
           },
           {
             "in": "query",
