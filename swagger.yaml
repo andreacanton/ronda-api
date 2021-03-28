@@ -14,6 +14,8 @@ tags:
     description: 'Manage users and personal profile'
   - name: 'recipient'
     description: "Manage Ronda's recipients"
+  - name: 'items'
+    description: 'Get available items'
 servers:
   - url: https://api.rondadellacaritaverona.org
     description: Production
@@ -579,6 +581,29 @@ paths:
             properties:
               isTaken:
                 type: boolean
+/items:
+  get:
+    tags:
+      - 'items'
+    summary: 'Get list of items'
+    consumes:
+      - 'application/json'
+    produces:
+      - 'application/json'
+    responses:
+      '200':
+        description: 'successful operation'
+        schema:
+          type: 'array'
+          items:
+            $ref: '#/components/schemas/Item'
+          properties:
+            message:
+              type: 'string'
+      '401':
+        $ref: '#/components/responses/Unauthorized'
+    security:
+      - Bearer: []
 securityDefinitions:
   Bearer:
     type: apiKey
@@ -681,6 +706,19 @@ components:
         bottomSize:
           type: string
         shoeSize:
+          type: string
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+    Item:
+      type: object
+      properties:
+        itemId:
+          type: integer
+        name:
+          type: string
+        sizeCategory:
           type: string
         createdAt:
           type: string
