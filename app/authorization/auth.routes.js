@@ -1,14 +1,35 @@
 const express = require('express');
-const { addMinutes } = require('date-fns');
+const { addMinutes, addWeeks, addSeconds } = require('date-fns');
 const logger = require('../../logger');
 const User = require('../user/user.model');
 const config = require('../../config');
 const mailer = require('../../mailer');
-const { createJwt, refreshJwt, getPublicKey } = require('./auth.helper');
+const { createJwt, getPublicKey } = require('./auth.helper');
 const { getAuthFromHeaders } = require('./auth.helper');
 const Token = require('./token.model');
 
 const routes = express.Router();
+
+const getAccessAndRefreshTokenFromUser = async (user) => {
+  const accessToken = createJwt(user.get('userId'), {
+    role: user.get('role'),
+    email: user.get('email'),
+    firstname: user.get('firstname'),
+    lastname: user.get('lastname'),
+    memberNumber: user.get('memberNumber'),
+  });
+
+  const refreshToken = new Token({
+    userId: user.get('userId'),
+    type: 'refresh-token',
+    expiration: addWeeks(new Date(), 1),
+  });
+  await refreshToken.save();
+  return {
+    access_token: accessToken,
+    refresh_token: refreshToken.get('tokenId'),
+  };
+};
 
 routes.post('/login', async (req, res) => {
   try {
@@ -27,17 +48,20 @@ routes.post('/login', async (req, res) => {
     if (!user) {
       throw Error(`User not found for identity ${req.body.identity}`);
     }
+
     await user.authenticate(req.body.password);
-    const tokenResponse = createJwt(user.get('userId'), {
-      role: user.get('role'),
-      email: user.get('email'),
-      firstname: user.get('firstname'),
-      lastname: user.get('lastname'),
-      memberNumber: user.get('memberNumber'),
-    });
-    res.json({
-      access_token: tokenResponse,
-    });
+
+    const oldRefreshToken = await new Token({
+      userId: user.get('userId'),
+      type: 'refresh-token',
+    }).fetch();
+
+    if (oldRefreshToken) {
+      oldRefreshToken.set('expiration', addSeconds(new Date(), -1));
+      await oldRefreshToken.save();
+    }
+
+    res.json(await getAccessAndRefreshTokenFromUser(user));
   } catch (e) {
     logger.warn('Login authentication failed', e);
     res.status(401).json({ message: 'Authentication failed' });
@@ -45,8 +69,31 @@ routes.post('/login', async (req, res) => {
 });
 
 routes.get('/refresh', async (req, res) => {
-  const token = getAuthFromHeaders(req.headers);
-  res.json(refreshJwt(token));
+  try {
+    const refreshTokenId = getAuthFromHeaders(req.headers);
+    const oldRefreshToken = await new Token({
+      tokenId: refreshTokenId,
+    }).fetch();
+
+    const expirationDate = oldRefreshToken.get('expiration');
+
+    if (expirationDate <= new Date()) {
+      throw new Error();
+    }
+
+    oldRefreshToken.set('expiration', addSeconds(new Date(), -1));
+    await oldRefreshToken.save();
+
+    const user = await new User({
+      userId: oldRefreshToken.get('userId'),
+      status: 'enabled',
+    }).fetch();
+
+    res.json(await getAccessAndRefreshTokenFromUser(user));
+  } catch (e) {
+    logger.warn('Invalid refresh token', e);
+    res.status(401).json({ message: 'Invalid refresh token' });
+  }
 });
 
 routes.get('/public-key', async (req, res) => {
