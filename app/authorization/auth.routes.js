@@ -54,7 +54,7 @@ routes.post('/login', async (req, res) => {
     const oldRefreshToken = await new Token({
       userId: user.get('userId'),
       type: 'refresh-token',
-    }).fetch();
+    }).fetch({ require: false });
 
     if (oldRefreshToken) {
       oldRefreshToken.set('expiration', addSeconds(new Date(), -1));
