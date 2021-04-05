@@ -7,7 +7,7 @@ const logger = require('./logger');
 const authRoutes = require('./app/authorization/auth.routes');
 const userRoutes = require('./app/user/user.routes');
 const recipientRoutes = require('./app/recipient/recipient.routes');
-const itemsRoutes = require('./app/item/items.routes');
+const itemsRoutes = require('./app/item/item.routes');
 const swaggerDoc = require('./swagger.json');
 const config = require('./config');
 
