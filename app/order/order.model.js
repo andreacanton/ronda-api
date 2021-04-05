@@ -1,8 +1,6 @@
-import { format } from 'date-fns';
-
+const { format } = require('date-fns');
 const _ = require('lodash');
 const CheckIt = require('checkit');
-const { v4: uuidV4 } = require('uuid');
 const orm = require('../../db');
 
 const AVAILABLE_STATUSES = ['created', 'cancelled', 'ready', 'delivered'];
@@ -26,7 +24,7 @@ const Order = orm.model(
           .first('order_number');
 
         const counter = lastOrder
-          ? parseInt(lastOrder.order_number.split('-')[2])
+          ? parseInt(lastOrder.order_number.split('-')[2], 10)
           : 0;
         const orderNumber = `#ORD-${currentYear}-${(counter + 1)
           .toString()
