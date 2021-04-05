@@ -4,6 +4,7 @@ exports.up = (knex) =>
     t.string('order_number').notNullable();
     t.integer('recipient_id').unsigned().notNullable();
     t.string('destination').notNullable();
+    t.string('status').notNullable();
     t.timestamps(false, true);
     t.foreign('recipient_id').references('recipient_id').inTable('recipients');
   });
