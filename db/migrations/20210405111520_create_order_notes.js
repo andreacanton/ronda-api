@@ -1,6 +1,6 @@
 exports.up = (knex) =>
   knex.schema.createTable('order_notes', (t) => {
-    t.increments('note_id').primary();
+    t.increments('order_note_id').primary();
     t.integer('order_id').unsigned().notNullable();
     t.string('user_id', 36).notNullable();
     t.string('phase');
