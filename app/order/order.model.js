@@ -55,6 +55,9 @@ const Order = orm.model(
     format(attributes) {
       return _.mapKeys(attributes, (value, key) => _.snakeCase(key));
     },
+    orderItems() {
+      return this.hasMany('OrderItems', 'order_id', 'order_id');
+    },
   },
   {},
 );
