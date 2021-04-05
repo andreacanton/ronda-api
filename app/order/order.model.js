@@ -62,7 +62,32 @@ const Order = orm.model(
       return this.hasMany('OrderNote', 'order_id', 'order_id');
     },
   },
-  {},
+  {
+    fetchWithFilters({
+      search,
+      page = 1,
+      pageSize = 20,
+      status,
+      recipientId,
+      sort,
+      direction = 'ASC',
+    }) {
+      let query = this.collection().query();
+      if (search) {
+        query = query.where('order_number', 'LIKE', `%${search}%`);
+      }
+      if (recipientId) {
+        query = query.where('recipient_id', '=', recipientId);
+      }
+      if (status) {
+        query = query.where('status', '=', status);
+      }
+      if (sort) {
+        query = query.orderBy(_.snakeCase(sort), direction);
+      }
+      return query.limit(pageSize).offset(pageSize * (page - 1));
+    },
+  },
 );
 
 module.exports = Order;
