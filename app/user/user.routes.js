@@ -1,10 +1,11 @@
 const express = require('express');
+const { addMinutes } = require('date-fns');
 const { authorize } = require('../authorization/auth.middleware');
-const { createJwt } = require('../authorization/auth.helper');
 const config = require('../../config');
 const mailer = require('../../mailer');
 const logger = require('../../logger');
 const User = require('./user.model');
+const Token = require('../authorization/token.model');
 
 const fetchUser = () => async (req, res, next) => {
   try {
@@ -97,13 +98,16 @@ routes.post('/', authorize('admin'), async (req, res, next) => {
     }).save();
 
     if (user.get('email') && req.query.resetUrl) {
-      const resetToken = createJwt(
-        user.get('userId'),
-        { resetPassword: true },
-        '1h',
-      );
+      const resetToken = new Token({
+        userId: user.get('userId'),
+        type: 'reset-password',
+        expiration: addMinutes(new Date(), 15),
+      });
+      await resetToken.save();
 
-      const resetPasswordUrl = `${req.query.resetUrl}?token=${resetToken}`;
+      const resetPasswordUrl = `${req.query.resetUrl}?token=${resetToken.get(
+        'tokenId',
+      )}`;
 
       await mailer.sendMail({
         from: config.get('email').defaultFrom,
