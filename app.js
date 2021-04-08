@@ -8,6 +8,7 @@ const authRoutes = require('./app/authorization/auth.routes');
 const userRoutes = require('./app/user/user.routes');
 const recipientRoutes = require('./app/recipient/recipient.routes');
 const itemsRoutes = require('./app/item/item.routes');
+const ordersRoutes = require('./app/order/order.routes');
 const swaggerDoc = require('./swagger.json');
 const config = require('./config');
 
@@ -33,6 +34,8 @@ app.use('/users', userRoutes);
 app.use('/recipients', recipientRoutes);
 
 app.use('/items', itemsRoutes);
+
+app.use('/orders', ordersRoutes);
 
 app.use(
   '/api-docs/',
