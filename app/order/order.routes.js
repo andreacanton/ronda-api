@@ -8,7 +8,9 @@ const OrderNote = require('./order-note.model');
 
 const fetchOrder = () => async (req, res, next) => {
   try {
-    req.order = await new Order({ orderId: req.params.orderId }).fetch();
+    req.order = await new Order({ orderId: req.params.orderId }).fetch({
+      withRelated: ['orderNote', 'orderItem'],
+    });
     next();
   } catch (e) {
     if (e.message === 'EmptyResponse') {
@@ -78,25 +80,22 @@ routes.patch('/:orderId', authorize(), fetchOrder(), async (req, res, next) => {
     const { body, auth } = req;
     const order = await orm.transaction((t) =>
       new Order({
+        orderId: req.order.id,
         recipientId: body.recipientId,
         destination: body.destination,
-        status: 'created',
       })
         .save(null, { transacting: t })
-        .tap(async (model) => {
-          const oldItems = await model.related('orderItems');
-          oldItems.forEach(async (item) => {
+        .tap((model) => {
+          req.order.orderItems().forEach(async (item) => {
             await item.destroy({ transacting: t });
           });
-        })
-        .tap((model) =>
-          Promise.map(body.items, (item) =>
+          return Promise.map(body.items, (item) =>
             new OrderItem(item).save(
               { orderId: model.orderId },
               { transacting: t },
             ),
-          ),
-        )
+          );
+        })
         .tap((model) =>
           new OrderNote().save(
             {
