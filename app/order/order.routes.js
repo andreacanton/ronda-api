@@ -10,12 +10,12 @@ const OrderNote = require('./order-note.model');
 const fetchOrder = () => async (req, res, next) => {
   try {
     req.order = await new Order({ orderId: req.params.orderId }).fetch({
-      withRelated: ['orderNote', 'orderItem'],
+      withRelated: ['orderNotes', 'orderItems', 'recipient'],
     });
     next();
   } catch (e) {
     if (e.message === 'EmptyResponse') {
-      res.status(404).json({ message: 'User not found' });
+      res.status(404).json({ message: 'Order not found' });
     } else {
       next(e);
     }
@@ -36,6 +36,10 @@ routes.get('/', authorize(), async (req, res) => {
   });
 
   res.json(orders);
+});
+
+routes.get('/:orderId', authorize(), fetchOrder(), async (req, res) => {
+  res.json(req.order);
 });
 
 routes.post('/', authorize(), async (req, res, next) => {
