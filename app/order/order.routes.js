@@ -90,21 +90,29 @@ routes.patch('/:orderId', authorize(), fetchOrder(), async (req, res, next) => {
   }
 
   try {
-    const { body, auth } = req;
-    const order = await orm.transaction((t) =>
-      new Order({
-        orderId: req.order.id,
-        recipientId: body.recipientId,
-        destination: body.destination,
-      })
+    const { body, auth, order } = req;
+    await orm.transaction((t) => {
+      if (body.recipientId) {
+        order.set('recipientId', body.recipientId);
+      }
+      if (body.destination) {
+        order.set('destination', body.destination);
+      }
+      return order
         .save(null, { transacting: t })
-        .tap((model) => {
-          req.order.orderItems().forEach(async (item) => {
-            await item.destroy({ transacting: t });
-          });
-          return Promise.map(body.items, (item) =>
-            new OrderItem(item).save({ orderId: model.id }, { transacting: t }),
-          );
+        .tap(async (model) => {
+          if (body.items) {
+            order.orderItems().forEach(async (item) => {
+              await item.destroy({ transacting: t });
+            });
+            return Bluebird.map(body.items, (item) =>
+              new OrderItem(item).save(
+                { orderId: model.id },
+                { transacting: t },
+              ),
+            );
+          }
+          return null;
         })
         .tap((model) =>
           new OrderNote().save(
@@ -116,8 +124,8 @@ routes.patch('/:orderId', authorize(), fetchOrder(), async (req, res, next) => {
             },
             { transacting: t },
           ),
-        ),
-    );
+        );
+    });
     res.json(await order.fetch({ withRelated: ['orderItems', 'orderNotes'] }));
   } catch (e) {
     if (/invalid value/.test(e.message)) {
