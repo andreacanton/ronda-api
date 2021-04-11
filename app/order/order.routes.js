@@ -76,6 +76,13 @@ routes.post('/', authorize(), async (req, res, next) => {
 });
 
 routes.patch('/:orderId', authorize(), fetchOrder(), async (req, res, next) => {
+  if (req.order.get('status') !== 'created') {
+    res.status(400).json({
+      error: 'Order is not in created status',
+    });
+    next();
+  }
+
   try {
     const { body, auth } = req;
     const order = await orm.transaction((t) =>
