@@ -212,7 +212,7 @@ paths:
         '200':
           description: 'successful operation'
           schema:
-            type: 'array'
+            type: array
             items:
               $ref: '#/components/schemas/UserRequest'
         '401':
@@ -581,29 +581,26 @@ paths:
             properties:
               isTaken:
                 type: boolean
-/items:
-  get:
-    tags:
-      - 'items'
-    summary: 'Get list of items'
-    consumes:
-      - 'application/json'
-    produces:
-      - 'application/json'
-    responses:
-      '200':
-        description: 'successful operation'
-        schema:
-          type: 'array'
-          items:
-            $ref: '#/components/schemas/Item'
-          properties:
-            message:
-              type: 'string'
-      '401':
-        $ref: '#/components/responses/Unauthorized'
-    security:
-      - Bearer: []
+  /items:
+    get:
+      tags:
+        - 'items'
+      summary: 'Get list of items'
+      consumes:
+        - 'application/json'
+      produces:
+        - 'application/json'
+      security:
+        - Bearer: []
+      responses:
+        '200':
+          description: 'successful operation'
+          schema:
+            type: 'array'
+            items:
+              $ref: '#/components/schemas/Item'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
 securityDefinitions:
   Bearer:
     type: apiKey
@@ -640,7 +637,7 @@ components:
         status:
           type: string
     Recipient:
-      type: 'object'
+      type: object
       properties:
         cardNumber:
           type: string
