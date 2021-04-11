@@ -9,9 +9,14 @@ const OrderNote = require('./order-note.model');
 
 const fetchOrder = () => async (req, res, next) => {
   try {
-    req.order = await new Order({ orderId: req.params.orderId }).fetch({
-      withRelated: ['orderNotes', 'orderItems', 'recipient'],
+    const order = await new Order({ orderId: req.params.orderId }).fetch({
+      withRelated: ['orderNotes', 'orderItems'],
     });
+    await order
+      .related('recipient')
+      .fetch({ columns: ['firstname', 'lastname', 'card_number'] });
+
+    req.order = order;
     next();
   } catch (e) {
     if (e.message === 'EmptyResponse') {
