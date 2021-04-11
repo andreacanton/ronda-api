@@ -59,7 +59,10 @@ const Order = orm.model(
       return this.hasMany('OrderItem', 'order_id', 'order_id');
     },
     orderNotes() {
-      return this.hasMany('OrderNote', 'order_id', 'order_id').related('user');
+      return this.hasMany('OrderNote', 'order_id', 'order_id');
+    },
+    recipient() {
+      return this.belongsTo('Recipient', 'recipient_id', 'recipient_id');
     },
   },
   {
@@ -72,20 +75,24 @@ const Order = orm.model(
       sort,
       direction = 'ASC',
     }) {
-      let query = this.collection().query();
-      if (search) {
-        query = query.where('order_number', 'LIKE', `%${search}%`);
-      }
-      if (recipientId) {
-        query = query.where('recipient_id', '=', recipientId);
-      }
-      if (status) {
-        query = query.where('status', '=', status);
-      }
-      if (sort) {
-        query = query.orderBy(_.snakeCase(sort), direction);
-      }
-      return query.limit(pageSize).offset(pageSize * (page - 1));
+      return this.collection()
+        .query((queryBuilder) => {
+          let query = queryBuilder;
+          if (search) {
+            query = query.where('order_number', 'LIKE', `%${search}%`);
+          }
+          if (recipientId) {
+            query = query.where('recipient_id', '=', recipientId);
+          }
+          if (status) {
+            query = query.where('status', '=', status);
+          }
+          if (sort) {
+            query = query.orderBy(_.snakeCase(sort), direction);
+          }
+          return query.limit(pageSize).offset(pageSize * (page - 1));
+        })
+        .fetch({ withRelated: ['recipient'] });
     },
   },
 );

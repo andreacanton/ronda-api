@@ -34,6 +34,7 @@ routes.get('/', authorize(), async (req, res) => {
     sort: req.query.sort,
     direction: req.query.dir,
   });
+
   res.json(orders);
 });
 
