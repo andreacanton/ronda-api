@@ -53,7 +53,7 @@ app.get('/', (req, res) => {
 
 app.use((err, req, res, next) => {
   if (err instanceof Error) {
-    logger.error(err);
+    logger.error(JSON.stringify(err));
     res.status(500).json({
       error: err,
     });
