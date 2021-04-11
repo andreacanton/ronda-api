@@ -1,4 +1,5 @@
 const express = require('express');
+const Bluebird = require('bluebird');
 const { authorize } = require('../authorization/auth.middleware');
 const orm = require('../../db');
 
@@ -47,7 +48,7 @@ routes.post('/', authorize(), async (req, res, next) => {
       })
         .save(null, { transacting: t })
         .tap((model) =>
-          Promise.map(body.items, (item) =>
+          Bluebird.map(body.items, (item) =>
             new OrderItem(item).save({ orderId: model.id }, { transacting: t }),
           ),
         )
@@ -57,13 +58,13 @@ routes.post('/', authorize(), async (req, res, next) => {
               orderId: model.id,
               phase: 'create',
               body: body.note,
-              userId: auth.user.userId,
+              userId: auth.user.id,
             },
             { transacting: t },
           ),
         ),
     );
-    res.json(order);
+    res.json(await order.fetch({ withRelated: ['orderItems', 'orderNotes'] }));
   } catch (e) {
     if (/invalid value/.test(e.message)) {
       res.status(400).json({

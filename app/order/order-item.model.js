@@ -34,7 +34,7 @@ const OrderItem = orm.model(
         ],
         size: ['required'],
         genre: ['required', (value) => ['male', 'female'].includes(value)],
-        quantity: ['required', 'integer', 'min:1'],
+        quantity: ['required', 'integer', 'greaterThan:1'],
       }).run(this.attributes);
     },
     parse(response) {

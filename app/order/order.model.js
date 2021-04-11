@@ -16,7 +16,7 @@ const Order = orm.model(
     },
     initialize() {
       this.on('creating', async () => {
-        const currentYear = format(new Date(), 'YYYY');
+        const currentYear = format(new Date(), 'yyyy');
         const lastOrder = await orm.knex
           .from('orders')
           .where('created_at', '>', `${currentYear}-01-01`)
@@ -59,7 +59,7 @@ const Order = orm.model(
       return this.hasMany('OrderItem', 'order_id', 'order_id');
     },
     orderNotes() {
-      return this.hasMany('OrderNote', 'order_id', 'order_id');
+      return this.hasMany('OrderNote', 'order_id', 'order_id').related('user');
     },
   },
   {

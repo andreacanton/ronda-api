@@ -26,7 +26,6 @@ const OrderNote = orm.model(
         ],
         userId: [
           'required',
-          'integer',
           async (value) => {
             const response = await orm.knex
               .from('users')
@@ -45,6 +44,9 @@ const OrderNote = orm.model(
     },
     order() {
       return this.belongsTo('Order', 'order_id', 'order_id');
+    },
+    user() {
+      return this.belongsTo('User', 'user_id', 'user_id');
     },
   },
   {},
