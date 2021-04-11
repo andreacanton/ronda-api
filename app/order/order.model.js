@@ -3,7 +3,7 @@ const _ = require('lodash');
 const CheckIt = require('checkit');
 const orm = require('../../db');
 
-const AVAILABLE_STATUSES = ['created', 'cancelled', 'ready', 'delivered'];
+const AVAILABLE_STATUSES = ['created', 'canceled', 'ready', 'delivered'];
 
 const Order = orm.model(
   'Order',

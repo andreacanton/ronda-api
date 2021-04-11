@@ -54,7 +54,7 @@ routes.post('/', authorize(), async (req, res, next) => {
         .tap((model) =>
           new OrderNote().save(
             {
-              orderId: model.orderId,
+              orderId: model.id,
               phase: 'create',
               body: body.note,
               userId: auth.user.userId,
@@ -97,16 +97,13 @@ routes.patch('/:orderId', authorize(), fetchOrder(), async (req, res, next) => {
             await item.destroy({ transacting: t });
           });
           return Promise.map(body.items, (item) =>
-            new OrderItem(item).save(
-              { orderId: model.orderId },
-              { transacting: t },
-            ),
+            new OrderItem(item).save({ orderId: model.id }, { transacting: t }),
           );
         })
         .tap((model) =>
           new OrderNote().save(
             {
-              orderId: model.orderId,
+              orderId: model.id,
               phase: 'edit',
               body: body.note,
               userId: auth.user.userId,
@@ -115,7 +112,7 @@ routes.patch('/:orderId', authorize(), fetchOrder(), async (req, res, next) => {
           ),
         ),
     );
-    res.json(order);
+    res.json(await order.fetch({ withRelated: ['orderItems', 'orderNotes'] }));
   } catch (e) {
     if (/invalid value/.test(e.message)) {
       res.status(400).json({
@@ -126,5 +123,146 @@ routes.patch('/:orderId', authorize(), fetchOrder(), async (req, res, next) => {
     }
   }
 });
+
+routes.patch(
+  '/:orderId/cancel',
+  authorize(),
+  fetchOrder(),
+  async (req, res, next) => {
+    if (!['prepared', 'created'].includes(req.order.get('status'))) {
+      res.status(400).json({
+        error: 'Order is not in created or prepared status',
+      });
+      next();
+    }
+
+    try {
+      const { body, auth } = req;
+      const order = await orm.transaction((t) =>
+        new Order({
+          orderId: req.order.id,
+          status: 'canceled',
+        })
+          .save(null, { transacting: t })
+          .tap((model) =>
+            new OrderNote().save(
+              {
+                orderId: model.id,
+                phase: 'cancel',
+                body: body.note,
+                userId: auth.user.userId,
+              },
+              { transacting: t },
+            ),
+          ),
+      );
+      res.json(
+        await order.fetch({ withRelated: ['orderItems', 'orderNotes'] }),
+      );
+    } catch (e) {
+      if (/invalid value/.test(e.message)) {
+        res.status(400).json({
+          error: e,
+        });
+      } else {
+        next(e);
+      }
+    }
+  },
+);
+
+routes.patch(
+  '/:orderId/prepare',
+  authorize(),
+  fetchOrder(),
+  async (req, res, next) => {
+    if (req.order.get('status') !== 'created') {
+      res.status(400).json({
+        error: 'Order is not in created status',
+      });
+      next();
+    }
+
+    try {
+      const { body, auth } = req;
+      const order = await orm.transaction((t) =>
+        new Order({
+          orderId: req.order.id,
+          status: 'prepared',
+        })
+          .save(null, { transacting: t })
+          .tap((model) =>
+            new OrderNote().save(
+              {
+                orderId: model.id,
+                phase: 'prepare',
+                body: body.note,
+                userId: auth.user.userId,
+              },
+              { transacting: t },
+            ),
+          ),
+      );
+      res.json(
+        await order.fetch({ withRelated: ['orderItems', 'orderNotes'] }),
+      );
+    } catch (e) {
+      if (/invalid value/.test(e.message)) {
+        res.status(400).json({
+          error: e,
+        });
+      } else {
+        next(e);
+      }
+    }
+  },
+);
+
+routes.patch(
+  '/:orderId/deliver',
+  authorize(),
+  fetchOrder(),
+  async (req, res, next) => {
+    if (req.order.get('status') !== 'prepared') {
+      res.status(400).json({
+        error: 'Order is not in prepared status',
+      });
+      next();
+    }
+
+    try {
+      const { body, auth } = req;
+      const order = await orm.transaction((t) =>
+        new Order({
+          orderId: req.order.id,
+          status: 'delivered',
+        })
+          .save(null, { transacting: t })
+          .tap((model) =>
+            new OrderNote().save(
+              {
+                orderId: model.id,
+                phase: 'deliver',
+                body: body.note,
+                userId: auth.user.userId,
+              },
+              { transacting: t },
+            ),
+          ),
+      );
+      res.json(
+        await order.fetch({ withRelated: ['orderItems', 'orderNotes'] }),
+      );
+    } catch (e) {
+      if (/invalid value/.test(e.message)) {
+        res.status(400).json({
+          error: e,
+        });
+      } else {
+        next(e);
+      }
+    }
+  },
+);
 
 module.exports = routes;
