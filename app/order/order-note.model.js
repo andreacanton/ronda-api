@@ -2,7 +2,7 @@ const _ = require('lodash');
 const CheckIt = require('checkit');
 const orm = require('../../db');
 
-const AVAILABLE_PHASE = ['create', 'edit', 'cancel', 'deliver'];
+const AVAILABLE_PHASE = ['create', 'edit', 'prepare', 'cancel', 'deliver'];
 
 const OrderNote = orm.model(
   'OrderNote',
