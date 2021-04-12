@@ -105,27 +105,27 @@ routes.patch('/:orderId', authorize(), fetchOrder(), async (req, res, next) => {
       }
       return order
         .save(null, { transacting: t })
-        .tap(async (model) => {
-          if (body.items) {
-            order.orderItems().forEach(async (item) => {
-              await item.destroy({ transacting: t });
-            });
-            return Bluebird.map(body.items, (item) =>
-              new OrderItem(item).save(
-                { orderId: model.id },
-                { transacting: t },
+        .tap(async (model) =>
+          orm
+            .knex('order_items')
+            .where({ order_id: order.id })
+            .del()
+            .then(() =>
+              Bluebird.map(body.items, (item) =>
+                new OrderItem(item).save(
+                  { orderId: model.id },
+                  { transacting: t },
+                ),
               ),
-            );
-          }
-          return null;
-        })
+            ),
+        )
         .tap((model) =>
           new OrderNote().save(
             {
               orderId: model.id,
               phase: 'edit',
               body: body.note,
-              userId: auth.user.userId,
+              userId: auth.user.id,
             },
             { transacting: t },
           ),
@@ -169,7 +169,7 @@ routes.patch(
                 orderId: model.id,
                 phase: 'cancel',
                 body: body.note,
-                userId: auth.user.userId,
+                userId: auth.user.id,
               },
               { transacting: t },
             ),
@@ -216,7 +216,7 @@ routes.patch(
                 orderId: model.id,
                 phase: 'prepare',
                 body: body.note,
-                userId: auth.user.userId,
+                userId: auth.user.id,
               },
               { transacting: t },
             ),
@@ -263,7 +263,7 @@ routes.patch(
                 orderId: model.id,
                 phase: 'deliver',
                 body: body.note,
-                userId: auth.user.userId,
+                userId: auth.user.id,
               },
               { transacting: t },
             ),
