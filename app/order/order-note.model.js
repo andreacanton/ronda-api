@@ -11,6 +11,7 @@ const OrderNote = orm.model(
     idAttribute: 'order_note_id',
     initialize() {
       this.on('saving', this.validateSave);
+      // eslint-disable-next-line no-unused-vars
       this.on('fetched', (model, columns, options) =>
         model.related('user').fetch({ columns: ['firstname', 'lastname'] }),
       );

@@ -134,15 +134,14 @@ routes.patch('/:orderId', authorize(), fetchOrder(), async (req, res, next) => {
           ),
         );
     });
-    res.json(await getOrderDetail(order.id));
+    return res.json(await getOrderDetail(order.id));
   } catch (e) {
     if (/invalid value/.test(e.message)) {
-      res.status(400).json({
+      return res.status(400).json({
         error: e,
       });
-    } else {
-      next(e);
     }
+    return next(e);
   }
 });
 
@@ -261,12 +260,11 @@ routes.patch(
       return res.json(await getOrderDetail(order.id));
     } catch (e) {
       if (/invalid value/.test(e.message)) {
-        res.status(400).json({
+        return res.status(400).json({
           error: e,
         });
-      } else {
-        next(e);
       }
+      return next(e);
     }
   },
 );

@@ -9,6 +9,7 @@ const OrderItem = orm.model(
     idAttribute: 'order_item_id',
     initialize() {
       this.on('saving', this.validateSave);
+      // eslint-disable-next-line no-unused-vars
       this.on('fetched', (model, columns, options) =>
         model.related('item').fetch(),
       );
