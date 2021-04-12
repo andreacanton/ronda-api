@@ -9,6 +9,9 @@ const OrderItem = orm.model(
     idAttribute: 'order_item_id',
     initialize() {
       this.on('saving', this.validateSave);
+      this.on('fetched', (model, columns, options) =>
+        model.related('item').fetch(),
+      );
     },
     validateSave() {
       return CheckIt({
