@@ -92,7 +92,9 @@ const Order = orm.model(
           }
           return query.limit(pageSize).offset(pageSize * (page - 1));
         })
-        .fetch();
+        .fetch({
+          withRelated: ['recipient'],
+        });
     },
   },
 );
