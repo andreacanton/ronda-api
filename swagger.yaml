@@ -141,6 +141,14 @@ paths:
         - 'application/json'
       produces:
         - 'application/json'
+      parameters:
+        - name: 'order'
+          in: 'body'
+          schema:
+            type: object
+            properties:
+              refreshToken:
+                type: string
       responses:
         '200':
           description: 'successful operation'
@@ -153,8 +161,6 @@ paths:
                 type: 'string'
         '401':
           description: 'Invalid refresh token'
-      security:
-        - Bearer: []
   /users:
     get:
       tags:

@@ -70,7 +70,7 @@ routes.post('/login', async (req, res) => {
 
 routes.get('/refresh', async (req, res) => {
   try {
-    const refreshTokenId = getAuthFromHeaders(req.headers);
+    const refreshTokenId = req.body.refreshToken;
     const oldRefreshToken = await new Token({
       tokenId: refreshTokenId,
     }).fetch();
