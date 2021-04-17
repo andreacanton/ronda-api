@@ -6,7 +6,7 @@ module.exports.createJwt = (subject, payload, expiration = null) => {
   const token = jwt.sign(payload, PRIVATE_KEY, {
     algorithm: 'RS256',
     subject: subject.toString(),
-    expiresIn: expiration || config.get('tokenExpiration'),
+    expiresIn: expiration || config.get('accessTokenExpiration'),
   });
   return token;
 };

@@ -17,10 +17,16 @@ const config = convict({
     default: '127.0.0.1',
     env: 'IP_ADDRESS',
   },
-  tokenExpiration: {
-    doc: 'The token default expiration time',
-    format: String,
-    default: '1h',
+  accessTokenExpiration: {
+    doc: 'The access token default expiration time in seconds',
+    format: 'integer',
+    default: 900,
+    env: 'TOKEN_EXPIRATION',
+  },
+  refreshTokenExpiration: {
+    doc: 'The refresh token default expiration time in seconds',
+    format: 'integer',
+    default: 1209600,
     env: 'TOKEN_EXPIRATION',
   },
   host: {

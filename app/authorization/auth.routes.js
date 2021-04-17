@@ -22,7 +22,7 @@ const getAccessAndRefreshTokenFromUser = async (user) => {
   const refreshToken = new Token({
     userId: user.get('userId'),
     type: 'refresh-token',
-    expiration: addWeeks(new Date(), 1),
+    expiration: addSeconds(new Date(), config.get('refreshTokenExpiration')),
   });
   await refreshToken.save();
   return {
