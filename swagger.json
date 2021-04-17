@@ -216,7 +216,7 @@
       }
     },
     "/auth/refresh": {
-      "get": {
+      "post": {
         "tags": [
           "auth"
         ],

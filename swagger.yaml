@@ -133,7 +133,7 @@ paths:
       security:
         - Bearer: []
   /auth/refresh:
-    get:
+    post:
       tags:
         - 'auth'
       summary: 'refresh token'

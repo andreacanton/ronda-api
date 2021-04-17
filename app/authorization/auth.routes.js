@@ -68,7 +68,7 @@ routes.post('/login', async (req, res) => {
   }
 });
 
-routes.get('/refresh', async (req, res) => {
+routes.post('/refresh', async (req, res) => {
   try {
     const refreshTokenId = req.body.refreshToken;
     const oldRefreshToken = await new Token({
