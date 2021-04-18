@@ -21,13 +21,13 @@ const config = convict({
     doc: 'The access token default expiration time in seconds',
     format: 'integer',
     default: 900, // 15 minutes
-    env: 'TOKEN_EXPIRATION',
+    env: 'ACCESS_TOKEN_EXPIRATION',
   },
   refreshTokenExpiration: {
     doc: 'The refresh token default expiration time in seconds',
     format: 'integer',
     default: 1209600, // 2 weeks
-    env: 'TOKEN_EXPIRATION',
+    env: 'REFRESH_TOKEN_EXPIRATION',
   },
   host: {
     doc: 'The server host name',
