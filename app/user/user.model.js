@@ -85,28 +85,29 @@ const User = orm.model(
       sort,
       direction = 'ASC',
     }) {
-      return this.collection()
-        .query((queryBuilder) => {
-          let query = queryBuilder;
-          if (search) {
-            query = query
-              .where('firstname', 'LIKE', `%${search}%`)
-              .orWhere('lastname', 'LIKE', `%${search}%`)
-              .orWhere('email', 'LIKE', `%${search}%`)
-              .orWhere('member_number', 'LIKE', `%${search}%`);
-          }
-          if (status) {
-            query = query.where('status', '=', status);
-          }
-          if (role) {
-            query = query.where('role', '=', role);
-          }
-          if (sort) {
-            query = query.orderBy(_.snakeCase(sort), direction);
-          }
-          return query.limit(pageSize).offset(pageSize * (page - 1));
-        })
-        .fetch();
+      return this.query((queryBuilder) => {
+        let query = queryBuilder;
+        if (search) {
+          query = query
+            .where('firstname', 'LIKE', `%${search}%`)
+            .orWhere('lastname', 'LIKE', `%${search}%`)
+            .orWhere('email', 'LIKE', `%${search}%`)
+            .orWhere('member_number', 'LIKE', `%${search}%`);
+        }
+        if (status) {
+          query = query.where('status', '=', status);
+        }
+        if (role) {
+          query = query.where('role', '=', role);
+        }
+        if (sort) {
+          query = query.orderBy(_.snakeCase(sort), direction);
+        }
+        return query;
+      }).fetchPage({
+        page,
+        pageSize,
+      });
     },
   },
 );

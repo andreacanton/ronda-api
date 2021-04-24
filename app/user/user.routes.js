@@ -32,7 +32,10 @@ routes.get('/', authorize('admin'), async (req, res) => {
     sort: req.query.sort,
     direction: req.query.dir,
   });
-  res.json(users);
+  res.json({
+    models: users.models,
+    pagination: users.pagination,
+  });
 });
 
 routes.get(

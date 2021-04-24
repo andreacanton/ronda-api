@@ -346,9 +346,31 @@
           "200": {
             "description": "successful operation",
             "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/components/schemas/UserRequest"
+              "type": "object",
+              "properties": {
+                "models": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserRequest"
+                  }
+                },
+                "pagination": {
+                  "type": "object",
+                  "properties": {
+                    "page": {
+                      "type": "number"
+                    },
+                    "pageSize": {
+                      "type": "number"
+                    },
+                    "rowCount": {
+                      "type": "number"
+                    },
+                    "pageCount": {
+                      "type": "number"
+                    }
+                  }
+                }
               }
             }
           },
