@@ -42,8 +42,10 @@ routes.get('/', authorize(), async (req, res) => {
     sort: req.query.sort,
     direction: req.query.dir,
   });
-
-  res.json(orders);
+  res.json({
+    models: orders.models,
+    pagination: orders.pagination,
+  });
 });
 
 routes.get('/:orderId', authorize(), fetchOrder(), async (req, res) => {

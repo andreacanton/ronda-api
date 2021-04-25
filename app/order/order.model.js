@@ -75,26 +75,32 @@ const Order = orm.model(
       sort,
       direction = 'ASC',
     }) {
-      return this.collection()
-        .query((queryBuilder) => {
-          let query = queryBuilder;
-          if (search) {
-            query = query.where('order_number', 'LIKE', `%${search}%`);
-          }
-          if (recipientId) {
-            query = query.where('recipient_id', '=', recipientId);
-          }
-          if (status) {
-            query = query.where('status', '=', status);
-          }
-          if (sort) {
-            query = query.orderBy(_.snakeCase(sort), direction);
-          }
-          return query.limit(pageSize).offset(pageSize * (page - 1));
-        })
-        .fetch({
-          withRelated: ['recipient'],
-        });
+      return this.query((queryBuilder) => {
+        let query = queryBuilder;
+        if (search) {
+          query = query.where('order_number', 'LIKE', `%${search}%`);
+        }
+        if (recipientId) {
+          query = query.where('recipient_id', '=', recipientId);
+        }
+        if (status) {
+          query = query.where('status', '=', status);
+        }
+        if (sort) {
+          query = query.orderBy(_.snakeCase(sort), direction);
+        }
+        return query;
+      }).fetchPage({
+        page,
+        pageSize,
+        withRelated: [
+          {
+            recipient: (query) => {
+              query.select('firstname', 'lastname', 'card_number');
+            },
+          },
+        ],
+      });
     },
   },
 );

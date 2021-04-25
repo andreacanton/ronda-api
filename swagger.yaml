@@ -223,7 +223,7 @@ paths:
               models:
                 type: array
                 items:
-                  $ref: '#/components/schemas/UserRequest'
+                  $ref: '#/components/schemas/User'
               pagination:
                 type: object
                 properties:
@@ -460,12 +460,24 @@ paths:
         '200':
           description: 'successful operation'
           schema:
-            type: 'array'
-            items:
-              $ref: '#/components/schemas/Recipient'
+            schema:
+            type: object
             properties:
-              message:
-                type: 'string'
+              models:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Recipient'
+              pagination:
+                type: object
+                properties:
+                  page:
+                    type: number
+                  pageSize:
+                    type: number
+                  rowCount:
+                    type: number
+                  pageCount:
+                    type: number
         '401':
           $ref: '#/components/responses/Unauthorized'
       security:
@@ -672,9 +684,24 @@ paths:
         '200':
           description: 'successful operation'
           schema:
-            type: 'array'
-            items:
-              $ref: '#/components/schemas/Order'
+            schema:
+            type: object
+            properties:
+              models:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Order'
+              pagination:
+                type: object
+                properties:
+                  page:
+                    type: number
+                  pageSize:
+                    type: number
+                  rowCount:
+                    type: number
+                  pageCount:
+                    type: number
         '401':
           $ref: '#/components/responses/Unauthorized'
     post:
